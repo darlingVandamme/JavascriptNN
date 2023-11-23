@@ -6,14 +6,17 @@ import  {createCanvas} from 'canvas';
 import { URL } from 'url';
 const __filename = new URL('', import.meta.url).pathname;
 const __dirname = new URL('.', import.meta.url).pathname;
+let mnistRoot = '../../MNIST/'
 
 let dataFileBuffer
 let labelFileBuffer
 
+
 function readMNIST(start, end) {
     if (!dataFileBuffer) {
-        dataFileBuffer = fs.readFileSync(__dirname + '../MNIST/train-images.idx3-ubyte');
-        labelFileBuffer = fs.readFileSync(__dirname + '../MNIST/train-labels.idx1-ubyte');
+        console.log("reading images")
+        dataFileBuffer = fs.readFileSync(__dirname + mnistRoot+"train-images.idx3-ubyte");
+        labelFileBuffer = fs.readFileSync(__dirname + mnistRoot+'train-labels.idx1-ubyte');
     }
     let pixelValues = [];
 
@@ -42,9 +45,7 @@ function readMNIST(start, end) {
 function saveMNIST(start, end) {
     const canvas = createCanvas(28, 28);
     const ctx = canvas.getContext('2d');
-
     var pixelValues = readMNIST(start, end);
-
     pixelValues.forEach(function(image)
     {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -59,7 +60,7 @@ function saveMNIST(start, end) {
             }
         }
         const buffer = canvas.toBuffer('image/png')
-        fs.writeFileSync(__dirname + `../MNIST/images/image${image.index}-${image.label}.png`, buffer)
+        fs.writeFileSync(__dirname + mnistRoot+`images/image${image.index}-${image.label}.png`, buffer)
     })
 }
 
@@ -68,6 +69,7 @@ function printImage(index){
     console.log(JSON.stringify(image))
 }
 
+export {readMNIST}
 
 // saveMNIST(20, 50);
-printImage(20)
+// printImage(20)

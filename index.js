@@ -1,5 +1,5 @@
-import Neuron from "./neuron.js";
-import NNet from "./nnet.js";
+import Neuron from "./lib/neuron.js";
+import NNet from "./lib/NNet.js";
 
 
 
