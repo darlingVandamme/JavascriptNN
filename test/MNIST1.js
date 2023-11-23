@@ -11,21 +11,34 @@ function resultArray(label){
 function test() {
     //console.time("total")
     const net = new NNet(28*28)
-    net.step = 0.1
-    net.addLayer(16)
+    net.step = 3
+    net.batchSize = 10
+    net.translateInput=  (v)=> v.map(item=> item/256 )
+    //net.addLayer(30)
+    net.addLayer(30)
     net.addLayer(10)  // output
 
-    let images = readMNIST(100,1820)
+    let images = readMNIST(1,20000)
     console.log(images[0])
 
-    for (let i=0;i<images.length;i++) {
-        net.train(images[i].pixels, resultArray(images[i].label))
+    console.time("train")
+    for (let epochs=0;epochs<20; epochs++) {
+
+        for (let i = 0; i < images.length; i++) {
+            net.train(images[i].pixels, resultArray(images[i].label))
+        }
+        console.log("epoch "+epochs)
+        console.timeLog("train")
+
     }
 
-    let testImages = readMNIST(5000,5020)
+    let testImages = readMNIST(15000,15020)
     for (let i=0;i<testImages.length;i++) {
         let result = net.check(testImages[i].pixels)
-        console.log("check "+i+" "+testImages[i].label+"  "+result)
+        let max = Math.max(...result)
+        let r= result.indexOf(max)
+
+        console.log("check "+i+" "+testImages[i].label+"  "+r+"   "+result)
     }
 
 

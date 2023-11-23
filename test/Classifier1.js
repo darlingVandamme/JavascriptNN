@@ -5,8 +5,8 @@ function test(){
     const net = new NNet(5)
     net.addLayer(4)
     net.addLayer(2)
-    net.batchSize = 1
-    net.step = 0.5
+    net.batchSize = 10
+    net.step = 10
     net.feed([1,0,0,2,1])
     console.log(net.getOutput())
     console.log(net)
