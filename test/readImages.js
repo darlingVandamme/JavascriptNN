@@ -86,4 +86,4 @@ function printImage(index){
 export {getImages}
 
 // saveMNIST(20, 50);
- printImage(20)
+// printImage(20)

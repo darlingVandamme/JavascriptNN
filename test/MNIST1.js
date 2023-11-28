@@ -11,32 +11,34 @@ function resultArray(label){
     return result
 }
 
-function test() {
+function run() {
     //console.time("total")
     net.step = 3
-    net.batchSize = 20
+    net.batchSize = 10
     net.translateInput=  (v)=> v.map(item=> item/256 )
+    net.calculateCosts = true
     //net.addLayer(35)
-    net.addLayer(50)
+    net.addLayer(30)
     net.addLayer(10)  // output
 
     let images = getImages(false,0,50000)
     // console.log(JSON.stringify(images[0]))
     train(images)
-    check(1000,true)
+    check(10000,true)
     //weights()
 }
 
 function train(images){
     console.time("train")
     let startTime = Date.now()
-    for (let epochs=0;epochs<10 ; epochs++) {
-        // net.step = net.step*0.95
+    for (let epochs=0;epochs<30 ; epochs++) {
+        net.step = net.step*0.9
         for (let i = 0; i < images.length; i++) {
             net.train(images[i].pixels, resultArray(images[i].label), images[i].label)
-            if (net.trainings%5000==0){
+            /*if (net.trainings%5000==0){
                 console.log("train "+net.trainings+"  Cost "+net.getAverageCost().toFixed(5))
-            }
+            }*/
+
         }
         check(1000,false)
         console.log("epoch "+epochs+"  Cost "+net.getAverageCost().toFixed(5) + " step "+net.step.toFixed(2))
@@ -65,9 +67,9 @@ function check(count,show){
     if (show) console.log("Training iterations "+ net.trainings+"  TrainTime "+net.trainTime+" "+(net.trainings/(net.trainTime/1000)).toFixed(2)+" Trainings/s " + net.step +" step")
     if (show) console.log("Training step:"+  net.step +"   BatchSize: "+net.batchSize)
     if (show) console.log("Check iterations "+ count+" "+(1000*count/(Date.now()-startTime)).toFixed(2)+" Checks/s ")
-    console.log("success rate "+ (correct/testImages.length).toFixed(2))
+    console.log("success rate "+ (correct/testImages.length).toFixed(3))
     if (show) console.log("Avg Cost "+ net.getAverageCost().toFixed(5))
-    if (show) console.log("labels ",net.patterns)
+    //if (show) console.log("labels ",net.patterns)
     if (show) console.timeLog("check")
 }
 
@@ -82,4 +84,4 @@ function weights(){
 }
 
 // console.log(resultArray(4))
-test()
+run()
