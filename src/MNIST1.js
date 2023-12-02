@@ -15,6 +15,7 @@ function run() {
     //console.time("total")
     net.step = 3
     net.batchSize = 10
+    net.epochs = 10
     net.translateInput=  (v)=> v.map(item=> item/256 )
     net.calculateCosts = true
     //net.addLayer(35)
@@ -22,7 +23,7 @@ function run() {
     net.addLayer(10)  // output
 
     let images = getImages(false,0,50000)
-    // console.log(JSON.stringify(images[0]))
+    //console.log(JSON.stringify(images[0]))
     train(images)
     check(10000,true)
     //weights()
@@ -31,8 +32,8 @@ function run() {
 function train(images){
     console.time("train")
     let startTime = Date.now()
-    for (let epochs=0;epochs<30 ; epochs++) {
-        net.step = net.step*0.9
+    for (let epochs=0;epochs<net.epochs ; epochs++) {
+        //net.step = net.step*0.9
         for (let i = 0; i < images.length; i++) {
             net.train(images[i].pixels, resultArray(images[i].label), images[i].label)
             /*if (net.trainings%5000==0){
@@ -56,11 +57,11 @@ function check(count,show){
     let correct = 0
     for (let i=0;i<testImages.length;i++) {
         let output = net.check(testImages[i].pixels)
-        //let max = Math.max(...result)
-        //let r= result.indexOf(max)
         let result = net.getResult(output)
         if(testImages[i].label == result.label) correct++
-        if (show) console.log("check "+i+" "+testImages[i].label+"  <=> "+result.label+"  "+result.score.toFixed(4)+"   "+ output.map(r=>r.toFixed(3)))
+
+        if (show) console.log(((testImages[i].label == result.label)?"check ":"MISS ")
+            +i+" "+testImages[i].label+"  <=> "+result.label+"  "+result.score.toFixed(4)+"   "+ output.map(r=>r.toFixed(3)))
     }
 
     if (show) console.log("Network "+net.layers+" layers "+ net.neurons.length+" neurons  ("+net.allNeurons().length+") "+net.neurons.reduce((prev,n)=>(prev+n.in.length),0)+" weights" )
