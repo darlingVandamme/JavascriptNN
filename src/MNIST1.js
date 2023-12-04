@@ -36,9 +36,9 @@ function train(images){
         //net.step = net.step*0.9
         for (let i = 0; i < images.length; i++) {
             net.train(images[i].pixels, resultArray(images[i].label), images[i].label)
-            /*if (net.trainings%5000==0){
-                console.log("train "+net.trainings+"  Cost "+net.getAverageCost().toFixed(5))
-            }*/
+            if (net.trainings%5000==0){
+                console.log("train "+net.trainings+"  Cost "+net.getAverageCost(10).toFixed(5))
+            }
 
         }
         check(1000,false)
