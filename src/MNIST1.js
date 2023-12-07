@@ -1,5 +1,6 @@
 import {NNet} from "../index.js";
 import {getImages} from "./readImages.js";
+import {countlog} from "../lib/counter.js"
 
 const net = new NNet(28*28)
 
@@ -70,6 +71,8 @@ function check(count,show){
     if (show) console.log("Avg Cost "+ net.getAverageCost().toFixed(5))
     //if (show) console.log("labels ",net.patterns)
     if (show) console.timeLog("check")
+    countlog()
+
 }
 
 function weights(){
