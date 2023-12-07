@@ -1,9 +1,7 @@
 import {NNet} from "../index.js";
 import {getImages} from "./readImages.js";
 
-
 const net = new NNet(28*28)
-
 
 function resultArray(label){
     let result = new Array(10).fill(0,0,10)
@@ -15,7 +13,7 @@ function run() {
     //console.time("total")
     net.step = 3
     net.batchSize = 10
-    net.epochs = 10
+    net.epochs = 3
     net.translateInput=  (v)=> v.map(item=> item/256 )
     net.calculateCosts = true
     //net.addLayer(35)

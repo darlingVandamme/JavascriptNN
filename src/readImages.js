@@ -1,5 +1,5 @@
 import fs from 'fs';
-import  {createCanvas} from 'canvas';
+// import  {createCanvas} from 'canvas';
 
 // https://stackoverflow.com/questions/25024179/reading-mnist-dataset-with-javascript-node-js
 
@@ -56,7 +56,7 @@ function readMNIST(test, start, end) {
     return pixelValues;
 }
 
-function saveMNIST(start, end) {
+/*function saveMNIST(start, end) {
     const canvas = createCanvas(28, 28);
     const ctx = canvas.getContext('2d');
     var pixelValues = readMNIST(true, start, end);
@@ -77,6 +77,7 @@ function saveMNIST(start, end) {
         fs.writeFileSync(__dirname + mnistRoot+`images/image${image.index}-${image.label}.png`, buffer)
     })
 }
+*/
 
 function printImage(index){
     let image = getImages(true,index,index+1)[0]
