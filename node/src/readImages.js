@@ -8,9 +8,6 @@ const __filename = new URL('', import.meta.url).pathname;
 const __dirname = new URL('.', import.meta.url).pathname;
 let mnistRoot = '../../MNIST/'
 
-/*let dataFileBuffer
-let labelFileBuffer
-*/
 let trainData
 let testData
 
@@ -48,9 +45,9 @@ function readMNIST(test, start, end) {
         // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Typed_arrays
 
         let imageData  = {};
-        imageData["index"] = image;
-        imageData["label"] = labelFileBuffer[image + 8];
-        imageData["pixels"] = pixels;
+        imageData.index = image;
+        imageData.label = labelFileBuffer[image + 8];
+        imageData.pixels = new Float32Array(pixels.map(p=>p/256));
         pixelValues.push(imageData);
     }
     return pixelValues;

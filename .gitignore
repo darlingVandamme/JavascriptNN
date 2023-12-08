@@ -137,3 +137,5 @@ dist
 .idea/modules.xml
 .idea/vagrant.xml
 .idea/vcs.xml
+/java/java.iml
+/java/.idea/

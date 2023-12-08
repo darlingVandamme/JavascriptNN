@@ -15,7 +15,7 @@ function run() {
     net.step = 3
     net.batchSize = 10
     net.epochs = 3
-    net.translateInput=  (v)=> v.map(item=> item/256 )
+    //net.translateInput=  (v)=> v.map(item=> item/256 )
     net.calculateCosts = true
     //net.addLayer(35)
     net.addLayer(30)

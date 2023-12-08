@@ -18,9 +18,9 @@ class Neuron {
     }
 
     reset(){
-            this.value = null
-            this.delta = null
-            //this.out.forEach(c => c.out.reset())
+        this.value = null
+        this.delta = null
+        //this.out.forEach(c => c.out.reset())
     }
 
     connect(other){
@@ -60,7 +60,7 @@ class Neuron {
 
     getValue(){
         //count("getvalue")
-        if (this.value == null){
+        if (this.value === null){
             this.ff()
         }
         return this.value
@@ -69,7 +69,7 @@ class Neuron {
     getDelta(){
         if (this.isInput() ) return 0 // ?
         // lazy calculate
-        if (this.delta == null) {
+        if (this.delta === null) {
             let zDeriv = this.actDeriv(this.z)
             if (this.isOutput() ) {
                 this.delta = ((this.value - this.expected) * zDeriv)

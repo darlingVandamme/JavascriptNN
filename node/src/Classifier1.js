@@ -3,7 +3,7 @@ import NNet from "../lib/NNet.js";
 function test(){
     //console.time("total")
     const net = new NNet(5)
-    net.addLayer(50)
+    net.addLayer(10)
     net.addLayer(2)
     net.batchSize = 10
     net.step = 10
@@ -49,7 +49,7 @@ function test(){
 
 
     console.timeEnd()
-
+    //console.log(net.allNeurons())
 }
 
 test()
