@@ -75,8 +75,8 @@ public class MNIST {
     }
     public void readData(){
         try {
-            train = new MnistDataReader().readData("../MNIST/train-images.idx3-ubyte", "../MNIST/train-labels.idx1-ubyte");
-            test = new MnistDataReader().readData("../MNIST/t10k-images.idx3-ubyte", "../MNIST/t10k-labels.idx1-ubyte");
+            train = new MnistDataReader().readData("../../MNIST/train-images.idx3-ubyte", "../../MNIST/train-labels.idx1-ubyte");
+            test = new MnistDataReader().readData("../../MNIST/t10k-images.idx3-ubyte", "../../MNIST/t10k-labels.idx1-ubyte");
             System.out.println("read data "+train.length+" "+test.length);
         } catch (IOException e){
             System.out.println("Error reading data "+e);
