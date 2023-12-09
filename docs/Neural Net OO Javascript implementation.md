@@ -1,10 +1,11 @@
 # Neural Net OO Javascript implementation
 Although I learned the underlying basics of neural networks
-since the early 1990's and already did some experiments with AI and ML, 
-I now wanted to really know and understand the low-level details. 3blue1brown
+since the early 1990's and already did some experiments with AI and ML. 
+With the recent wave of new AI tools appearing everywhere, I wanted to really know and understand the low-level details. 
+3blue1brown
 Michael Nielsen explains this quite nice in his [online book](http://neuralnetworksanddeeplearning.com).
 But I found the accompanying code really bad. 
-The python code (of course python, what else...) is difficult to read, and doesn't reflect what the concept of a neural network.
+The python code (of course python, what else...) is difficult to read, and doesn't reflect what the concept of a neural network really is.
 A neural net is such a nice example to fit object-oriented programming, but almost all examples ...
 
 I did a quick google search to see if I could find better, nicer looking implementations, but I was quite disappointed.
@@ -22,13 +23,18 @@ Some people think that's nice and convenient and allows us to use speed-optimize
 But it doesn't exactly make the code transparent or readable. These articles have the intention to teach us something.
 The code should be an illustration or a clarification of the mathematical and computational theory.
 But in most cases the code reflects an alternate, mostly matrix oriented, view on the needed algorithms.
+
+[Code example]
+
+The program doesn't represent a neural network like it is explained in all the fancy pictures.
+It models something that can be shown to work mathematically equivalent to a neural network.
 I don't want an illustration of an alternative, which can be shown to be mathematically equivalent. I want to see the real thing. The working network.
 
 ## Performance
 I know, I know, performance!!! 
 We really need to use vectors and matrices so that we can use all the fancy libraries that do the magic. 
 As if neural networks need more, obscure, hocus pocus than there already is. 
-How and especially why neural networks work is already a mystery, even to most of the poeple programming and using them. 
+How and especially why neural networks work is already a mystery, even to most of the people programming and using them. 
 We don't need an extra layer of black box obscurity.
 
 The code examples in these articles have an educational, illustrative purpose. They shouldn't focus on performance.
@@ -94,8 +100,8 @@ class Neuron {
         this.delta = null
     }
 
-    connect(other) {
-        this.in = other.map(other => {
+    connect(layer) {
+        this.in = layer.map(other => {
             let conn = new Connection(other, this)
             this.layer = other.layer + 1
             return conn
@@ -131,9 +137,9 @@ class Connection {
     }
 }
 ```
-If a neuron is in reset state (value === null) ff() will calculate the weighted sum of the values of the provious layer (this.in) and add the bias value of the neuron.
+If a neuron is in reset state (value === null) ff() will calculate the weighted sum of the values of the previous layer (this.in) and add the bias value of the neuron.
 That weighted sum is stored in this.z, after which a so-called activation function is applied to get the output value of the neuron. 
-The getValue functions checks if the value for this neuron is already calculated and if not, calls the ff function.
+The getValue function checks if the value for this neuron is already calculated and if not, calls the ff function.
 At first this mechanism might look a bit strange and backwards to people who are used to the more classical forward moving implementation.
 Later on, we will show that this backwards approach can be changed to a forward one (with a certain extra speed gain) by simply adding a single line of code. 
 But I do think this implementation has a certain beauty in it, that might become clear when we try out some more experimental designs.
@@ -168,7 +174,6 @@ class NNet {
         let layer = Array.from({length: size}, (n1, i) => {
             let n = new Neuron()
             this.neurons.push(n)
-            //this.neurons.unshift(n)
             n.connect(this.output)
             return n
         })
@@ -229,11 +234,13 @@ At the low level, a feed forward is done by:
 
 To decorate this a bit, there are 2 methods that default to 'do nothing' but can be used to transform an input object to a correct input array (translateInput)
 or to interpret the meaning of the output array to a meaningful result.
-In our example with the handwritten numbers, translateInput could convert an image to a predefined size and convert the 0-255 grayscale integers to a 0-1 array of doubles.
-TranslateOutput can be used to identify the largest value in the output vector and return that index.
-The check methods simply combines translateInput -> feed -> getOutput -> translateOutput
+In our example with the handwritten numbers, translateInput could convert an image to a predefined size and convert the 0-255 grayscale integers to an array of 0-1 doubles.
+TranslateOutput can be used to identify the largest value in the output vector and return that index as the final answer of the network.
+
+The check methods simply combines translateInput -> feed -> getOutput -> translateOutput.
 [add illustration]
-Now the neural network is in theory fully functional, but we cannot show this, because there's not training mechanism or an option to load predefined networks. 
+
+Now the neural network is in theory fully functional, but we cannot show this, because there's no training mechanism or an option to load predefined networks. 
 
 [todo: pretrained classifier]
 

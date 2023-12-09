@@ -29,7 +29,7 @@ function test(){
     }
     console.timeLog("train")
     console.log(net)
-    net.feed([1,0,0,2,2])
+    net.feed([1,0,0,2,1])
     console.log("expected  [0 , 1] ",net.getOutput())
     net.feed([0,1,0,0,0])
     console.log("expected  [1 , 0] ",net.getOutput())

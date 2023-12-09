@@ -2,11 +2,9 @@ import Neuron from "./neuron.js";
 
 class NNet{
     constructor(inputSize){
-        this.input = Array.from({length:inputSize}, (n1,i)=>{
-            return new Neuron()
-        })
+        this.layers = 0
+        this.input = this.addLayer(inputSize)
         this.output = this.input
-        this.layers = 1
         this.step = 3.0
         this.batchSize = 10
         this.trainings = 0
@@ -24,15 +22,19 @@ class NNet{
     }
 
     addLayer(size){
+        let position = 0
         let layer = Array.from({length:size}, (n1,i)=>{
             let n = new Neuron()
-            this.neurons.push(n)
-            //this.neurons.unshift(n)
-            n.connect(this.output)
+            n.position = position++
+            if (this.neurons) {
+                this.neurons.push(n)
+                n.connect(this.output)
+            }
             return n
         })
         this.output = layer
         this.layers++
+        return layer
     }
 
     reset(){this.neurons.forEach((n,i)=>{n.reset()})}

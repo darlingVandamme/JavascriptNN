@@ -5,7 +5,7 @@ import java.util.ListIterator;
 public class NNet {
    private Neuron[] input;
    private Neuron[] output;
-   private int layers = 1;
+   private int layers = 0;
    public double step = 2;
    public int batchSize = 10;
    int batches = 0;
@@ -15,28 +15,23 @@ public class NNet {
     private ArrayList<Neuron> neurons;
     private double costs[] = new double[500];
     public NNet(int inputSize){
-        input = new Neuron[inputSize];
-        for (int i = 0; i < input.length; i++) {
-            input[i] = new Neuron();
-        }
+        input = addLayer(inputSize);
         output = input;
-        this.layers = 1;
-        this.step = 10;
-        this.batchSize = 10;
-        this.trainings = 0;
-        this.count = 0;
         this.neurons = new ArrayList();
     }
 
-    public void addLayer(int size){
+    public Neuron[] addLayer(int size){
         Neuron[] layer = new Neuron[size];
         for (int i = 0; i < size; i++) {
             layer[i] = new Neuron();
-            layer[i].connect(this.output);
-            this.neurons.add(layer[i]);
+            if (this.neurons!=null) { // not input
+                layer[i].connect(this.output);
+                this.neurons.add(layer[i]);
+            }
         }
         this.output = layer;
         this.layers++;
+        return layer;
     }
 
     public void reset() {

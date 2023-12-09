@@ -22,7 +22,7 @@ function run() {
     net.addLayer(10)  // output
 
     let images = getImages(false,0,50000)
-    //console.log(JSON.stringify(images[0]))
+    // console.log(JSON.stringify(images[0]))
     train(images)
     check(10000,true)
     //weights()

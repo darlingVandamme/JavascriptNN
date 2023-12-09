@@ -15,6 +15,7 @@ class Neuron {
         this.bias = getRandom()
         this.z = 1.0
         this.layer = 0
+        this.position = 0
     }
 
     reset(){
@@ -23,13 +24,17 @@ class Neuron {
         //this.out.forEach(c => c.out.reset())
     }
 
-    connect(other){
-        this.in = other.map(other=>{
-            let conn = new Connection(other, this)
-            this.layer = other.layer+1
-            return conn
-        })
+    connect(layer){
+        if (layer) {
+            console.log("Connect ", this.position)
+            this.in = layer.map(other => {
+                let conn = new Connection(other, this)
+                this.layer = other.layer + 1
+                return conn
+            })
+        }
     }
+
 
     ff(){
         this.z = this.in.reduce((prev, conn) => {
