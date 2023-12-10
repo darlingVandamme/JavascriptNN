@@ -12,7 +12,7 @@ function resultArray(label){
 
 function run() {
     //console.time("total")
-    net.step = 3
+    net.step = 2
     net.batchSize = 10
     net.epochs = 3
     //net.translateInput=  (v)=> v.map(item=> item/256 )
@@ -56,14 +56,15 @@ function check(count,show){
     let correct = 0
     for (let i=0;i<testImages.length;i++) {
         let output = net.check(testImages[i].pixels)
-        let result = net.getResult(output)
+        let result = {label: net.getHighest(output), score:1}  //
+        //let result= net.getResult(output)
         if(testImages[i].label == result.label) correct++
 
         if (show) console.log(((testImages[i].label == result.label)?"check ":"MISS ")
             +i+" "+testImages[i].label+"  <=> "+result.label+"  "+result.score.toFixed(4)+"   "+ output.map(r=>r.toFixed(3)))
     }
 
-    if (show) console.log("Network "+net.layers+" layers "+ net.neurons.length+" neurons  ("+net.allNeurons().length+") "+net.neurons.reduce((prev,n)=>(prev+n.in.length),0)+" weights" )
+    if (show) console.log("Network "+net.layers+" layers "+ net.hoNeurons.length+" neurons  ("+net.neurons.length+") "+net.hoNeurons.reduce((prev,n)=>(prev+n.in.length),0)+" weights" )
     if (show) console.log("Training iterations "+ net.trainings+"  TrainTime "+net.trainTime+" "+(net.trainings/(net.trainTime/1000)).toFixed(2)+" Trainings/s " + net.step +" step")
     if (show) console.log("Training step:"+  net.step +"   BatchSize: "+net.batchSize)
     if (show) console.log("Check iterations "+ count+" "+(1000*count/(Date.now()-startTime)).toFixed(2)+" Checks/s ")
@@ -76,7 +77,7 @@ function check(count,show){
 }
 
 function weights(){
-    net.neurons.forEach(n=>{
+    net.hoNeurons.forEach(n=>{
         console.log("Neuron "+n.id+"  layer "+n.layer+"  bias "+n.bias)
         n.in.forEach(con=>{
             console.log("Weight "+con.in.id+" \t"+con.weight)

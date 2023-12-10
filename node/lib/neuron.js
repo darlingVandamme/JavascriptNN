@@ -5,6 +5,7 @@ class Neuron {
 
     constructor(){ // link to network?
         this.id = (neurons++)
+        this.index = 0
         this.in = []
         this.out = []
         this.activate = sigmoid
@@ -24,9 +25,9 @@ class Neuron {
         //this.out.forEach(c => c.out.reset())
     }
 
-    connect(layer){
+    connectLayer(layer){ //todo use new connect method
         if (layer) {
-            console.log("Connect ", this.position)
+    //        console.log("Connect ", this.position)
             this.in = layer.map(other => {
                 let conn = new Connection(other, this)
                 this.layer = other.layer + 1
@@ -35,6 +36,24 @@ class Neuron {
         }
     }
 
+    connect(neurons,ids,weights){
+        // console.log("Connect ",ids, weights,neurons.length)
+        this.in = ids.map((id,i)=>{
+            return new Connection(neurons[id], this, weights[i])
+        })
+    }
+
+    setWeights(weights){
+        weights.forEach((w,i)=>{this.in[i].weight = w})
+    }
+
+    getWeights(){
+        return this.in.map((c)=>c.weight)
+    }
+
+    getConnectionIDs(){
+        return this.in.map((c) => c.in.id);
+    }
 
     ff(){
         this.z = this.in.reduce((prev, conn) => {
@@ -140,10 +159,10 @@ class Neuron {
 }
 
 class Connection {
-    constructor(input , output){
+    constructor(input , output, weight){
         this.in = input
         this.out = output
-        this.weight = getRandom()
+        this.weight = weight || getRandom()
         this.deltaSum=  0.0
         input.out.push(this)
     }
