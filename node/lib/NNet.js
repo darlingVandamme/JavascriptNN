@@ -3,22 +3,23 @@ import Neuron from "./neuron.js";
 class NNet{
     constructor(inputSize){
         this.layers = 0
-        this.neurons = []
-        this.input = this.addLayer(inputSize)
-        this.output = this.input
         this.step = 3.0
         this.batchSize = 10
         this.trainings = 0
         this.batches =0
         this.count = 0
         this.patterns = {}
-        // keep a list of all neurons
+        // keep a list of neurons
         // makes it easier to reset and serialize
-        this.hoNeurons = [] // Hidden and output Neurons
-        // this.allNeurons = (function() { return [...this.input, ...this.neurons]})
+        this.neurons = [] // Hidden and output Neurons
+        this.allNeurons = []
+        this.output = []
+        this.input = this.addLayer(inputSize)
         this.costs = []
         this.costIndex=0
         this.costsSize = 500
+        this.bestCost = 1;
+        this.bestNetwork
     //    this.calculateCosts = true
     }
 
@@ -32,53 +33,58 @@ class NNet{
         // todo reverse? Copy from existing
         // expensive operation
         let clone = new NNet(this.input.length)
-        clone.hoNeurons = this.hoNeurons.map(n=>{
+        clone.neurons = this.neurons.map(n=>{
             let c = new Neuron()
             c.bias=n.bias
-            c.id=this.neurons.length
+            c.id=n.id
             c.index = n.index
-            clone.neurons.push(c)
-            c.connect( clone.neurons, n.getConnectionIDs(), n.getWeights())
+            clone.allNeurons.push(c)
+            c.connect( clone.allNeurons, n.getConnectionIDs(), n.getWeights())
             return c
         })
-        clone.output = clone.hoNeurons.slice(- this.output.length)
-        //console.log("cloned network ",clone.input.length, clone.neurons.length, clone.hoNeurons,clone.output.length )
+        clone.output = clone.neurons.slice(- this.output.length)
+        clone.step = this.step
+        clone.batchSize = this.batchSize
+        clone.trainings = this.trainings
+        clone.batches = this.batches
+        clone.count= this.count
+        clone.patterns = this.patterns
+        clone.costs = this.costs
+        clone.costIndex = this.costIndex
+        clone.costsSize = this.costsSize
+        clone.bestCost = this.bestCost
+        //console.log("cloned network ",clone.input.length, clone.allNeurons.length, clone.neurons,clone.output.length )
         return clone
     }
 
-    addLayer(size,weight,bias){  // weight[][] and bias[] optional for serialization / deserialization
+    addLayer(size){  // weight[][] and bias[] optional for serialization / deserialization
         let position = 0
         let layer = Array.from({length:size}, (n1,i)=>{
             let n = new Neuron()
             n.position = position++
-            if(bias){
-                n.bias = bias[i]
-            }
-            n.id=this.neurons.length
+            n.id=this.allNeurons.length
             n.index = i
-            this.neurons.push(n)
-            if (this.hoNeurons) { // if not input layer ...
-                this.hoNeurons.push(n)
-                n.connectLayer(this.output)
-                if (weight){
-                    n.weights(weight[i])
-                }
-            }
+            this.allNeurons.push(n)
+            /*if (this.output.length>0){
+                this.neurons.push(n)
+            }*/
+            this.output.forEach((other)=> n.connect(other))
             return n
         })
+        this.neurons.push(...layer.filter(n=> !n.isInput())) // add all non input neurons
         this.output = layer
         this.layers++
         return layer
     }
 
-    reset(){this.hoNeurons.forEach((n,i)=>{n.reset()})}
+    reset(){this.neurons.forEach((n, i)=>{n.reset()})}
 
     feed(input){
         this.count++
         this.reset()
         //counters["feed"]++
         this.input.forEach((n,i)=> {n.value = input[i]})
-        this.hoNeurons.forEach((n,i)=>{n.ff()})
+        this.neurons.forEach((n, i)=>{n.ff()})
         //for (let i=0;i<this.neurons.length;i++){this.neurons[i].ff()}
     }
 
@@ -173,9 +179,9 @@ class NNet{
         // backpropagate Delta recursive
         //this.neurons.forEach((n,i)=>n.getDelta())
 
-        // backpropagate delta iterative
-        for(let i=this.hoNeurons.length-1 ;i>=0;i--){
-            this.hoNeurons[i].getDelta()
+        // backpropagate delta iterative  backwards
+        for(let i=this.neurons.length-1 ; i>=0; i--){
+            this.neurons[i].getDelta()
         }
 
         // adjust weights
@@ -187,13 +193,35 @@ class NNet{
             // recursive
             //this.input.forEach((n,i)=>n.learn(this.step))
             // iterative
-            this.hoNeurons.forEach((n,i)=>n.learn(this.step/this.batchSize))
+            this.neurons.forEach((n, i)=>n.learn(this.step/this.batchSize))
             //console.log(" Cost  \t"+this.trainings+" \t "+this.getCost())
+            // keep a reference to the best network up till now
+            /*if (this.getAverageCost(100 ) < this.bestCost ){
+                this.bestCost = this.getAverageCost(100)
+                this.bestNetwork = this.clone();
+                console.log("Clone network "+this.bestCost)
+            }*/
         }
     }
 
     toJSON(){
+        // recent cost functions or success rate
+        // trainings
+        // patterns?
 
+        return {
+            inputSize: this.input.length,
+            outputSize: this.output.length,
+            allNeurons: this.allNeurons.map(n => {
+                return {
+                    bias: n.bias,
+                    id: n.id,
+                    index: n.index,
+                    connectionIDs: n.getConnectionIDs(),
+                    weights: n.getWeights()
+                }
+            })
+        }
     }
     /*printInfo(){
         console.log("counts "+counts)

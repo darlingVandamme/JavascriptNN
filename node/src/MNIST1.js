@@ -2,7 +2,7 @@ import {NNet} from "../index.js";
 import {getImages} from "./readImages.js";
 import {countlog} from "../lib/counter.js"
 
-const net = new NNet(28*28)
+let net = new NNet(28*28)
 
 function resultArray(label){
     let result = new Array(10).fill(0,0,10)
@@ -12,7 +12,7 @@ function resultArray(label){
 
 function run() {
     //console.time("total")
-    net.step = 2
+    net.step = 3
     net.batchSize = 10
     net.epochs = 3
     //net.translateInput=  (v)=> v.map(item=> item/256 )
@@ -33,13 +33,19 @@ function train(images){
     let startTime = Date.now()
     for (let epochs=0;epochs<net.epochs ; epochs++) {
         //net.step = net.step*0.9
-        for (let i = 0; i < images.length; i++) {
-            net.train(images[i].pixels, resultArray(images[i].label), images[i].label)
+        images.forEach(image=>{
+            net.train(image.pixels, resultArray(image.label), image.label)
             if (net.trainings%5000==0){
-                console.log("train "+net.trainings+"  Cost "+net.getAverageCost(10).toFixed(5))
-            }
+                if (net.bestNetwork){
+                    // switch to better
+                    console.log("switch to better ")
+                    net.bestNetwork.epochs = net.epochs
+                    //net = net.bestNetwork
 
-        }
+                }
+                console.log("train "+net.trainings+"  Cost "+net.getAverageCost(100).toFixed(6))
+            }
+        })
         check(1000,false)
         console.log("epoch "+epochs+"  Cost "+net.getAverageCost().toFixed(5) + " step "+net.step.toFixed(2))
         net.trainTime = Date.now() - startTime
@@ -54,31 +60,34 @@ function check(count,show){
     if (show) console.log("test images "+start+" "+count )
     let testImages = getImages(true,start,start+count)
     let correct = 0
-    for (let i=0;i<testImages.length;i++) {
-        let output = net.check(testImages[i].pixels)
-        let result = {label: net.getHighest(output), score:1}  //
-        //let result= net.getResult(output)
-        if(testImages[i].label == result.label) correct++
+    testImages.forEach((image,i)=> {
+        let output = net.check(image.pixels)
+        //let result = {label: net.getHighest(output), score:1}  //
+        let result= net.getResult(output)
+        if(image.label == result.label) correct++
 
-        if (show) console.log(((testImages[i].label == result.label)?"check ":"MISS ")
-            +i+" "+testImages[i].label+"  <=> "+result.label+"  "+result.score.toFixed(4)+"   "+ output.map(r=>r.toFixed(3)))
-    }
+        /*if (show) console.log(((image.label == result.label)?"check ":"MISS ")
+            +i+" "+image.label+"  <=> "+result.label+"  "+result.score.toFixed(4)+"   "+ output.map(r=>r.toFixed(3)))*/
+    })
 
-    if (show) console.log("Network "+net.layers+" layers "+ net.hoNeurons.length+" neurons  ("+net.neurons.length+") "+net.hoNeurons.reduce((prev,n)=>(prev+n.in.length),0)+" weights" )
+    if (show) console.log("Network "+net.layers+" layers "+ net.neurons.length+" neurons  ("+net.allNeurons.length+") "+net.neurons.reduce((prev, n)=>(prev+n.in.length),0)+" weights" )
     if (show) console.log("Training iterations "+ net.trainings+"  TrainTime "+net.trainTime+" "+(net.trainings/(net.trainTime/1000)).toFixed(2)+" Trainings/s " + net.step +" step")
     if (show) console.log("Training step:"+  net.step +"   BatchSize: "+net.batchSize)
     if (show) console.log("Check iterations "+ count+" "+(1000*count/(Date.now()-startTime)).toFixed(2)+" Checks/s ")
     console.log("success rate "+ (correct/testImages.length).toFixed(3))
-    if (show) console.log("Avg Cost "+ net.getAverageCost().toFixed(5))
+    if (show) console.log("Avg Cost "+ net.getAverageCost(100).toFixed(5))
     //if (show) console.log("labels ",net.patterns)
     if (show) console.timeLog("check")
     countlog()
 
 }
 
+
+
+
 function weights(){
-    net.hoNeurons.forEach(n=>{
-        console.log("Neuron "+n.id+"  layer "+n.layer+"  bias "+n.bias)
+    net.neurons.forEach(n=>{
+        console.log("Neuron "+n.id+"  bias "+n.bias)
         n.in.forEach(con=>{
             console.log("Weight "+con.in.id+" \t"+con.weight)
         })

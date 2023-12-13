@@ -15,7 +15,7 @@ class Neuron {
         this.deltaSum = 0.0
         this.bias = getRandom()
         this.z = 1.0
-        this.layer = 0
+
         this.position = 0
     }
 
@@ -25,22 +25,8 @@ class Neuron {
         //this.out.forEach(c => c.out.reset())
     }
 
-    connectLayer(layer){ //todo use new connect method
-        if (layer) {
-    //        console.log("Connect ", this.position)
-            this.in = layer.map(other => {
-                let conn = new Connection(other, this)
-                this.layer = other.layer + 1
-                return conn
-            })
-        }
-    }
-
-    connect(neurons,ids,weights){
-        // console.log("Connect ",ids, weights,neurons.length)
-        this.in = ids.map((id,i)=>{
-            return new Connection(neurons[id], this, weights[i])
-        })
+    connect(other,weight){
+        this.in.push(new Connection(other, this, weight ))
     }
 
     setWeights(weights){
@@ -56,9 +42,8 @@ class Neuron {
     }
 
     ff(){
-        this.z = this.in.reduce((prev, conn) => {
-            return prev + (conn.weight * conn.in.getValue())
-        }, this.bias)
+        this.z = this.in.reduce((prev, conn) => prev + (conn.weight * conn.in.getValue())
+        , this.bias)
         //count("ff")
 
         //console.log(" z "+this.z+"  "+this.bias);
@@ -101,7 +86,7 @@ class Neuron {
               // other neurons
                 this.delta = this.out.reduce((prev, conn) => {
                     return prev + (conn.out.getDelta() * conn.weight )
-                }, 0) * zDeriv // * this.actDeriv(this.z)
+                }, 0) * zDeriv //
             }
             this.in.forEach((conn, i) => {
                 conn.setDelta(this.delta)

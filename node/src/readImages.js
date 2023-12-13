@@ -1,4 +1,5 @@
 import fs from 'fs';
+import path from 'path'
 // import  {createCanvas} from 'canvas';
 
 // https://stackoverflow.com/questions/25024179/reading-mnist-dataset-with-javascript-node-js
@@ -29,6 +30,11 @@ function readMNIST(test, start, end) {
         imageType = "t10k"
     }
     console.log("reading images "+test)
+    if(!fs.existsSync(__dirname + mnistRoot+imageType+"-images.idx3-ubyte")){
+        console.log("MNIST files not found")
+        console.log("looking for MNIST files at location "+ path.resolve(__dirname + mnistRoot))
+        throw new Error("MNIST files not found");
+    }
     let dataFileBuffer = fs.readFileSync(__dirname + mnistRoot+imageType+"-images.idx3-ubyte");
     let labelFileBuffer = fs.readFileSync(__dirname + mnistRoot+imageType+'-labels.idx1-ubyte');
 
