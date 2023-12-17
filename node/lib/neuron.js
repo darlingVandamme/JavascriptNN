@@ -25,8 +25,12 @@ class Neuron {
         //this.out.forEach(c => c.out.reset())
     }
 
+    connectLayer(layer,weights){
+        if (!weights) weights = []
+        layer.forEach((n,i)=>this.connect(n,weights[i]))
+    }
     connect(other,weight){
-        this.in.push(new Connection(other, this, weight ))
+        new Connection(other, this, weight )
     }
 
     setWeights(weights){
@@ -129,10 +133,12 @@ class Neuron {
         return this.out.length == 0
     }
 
+    isHidden(){
+        return (this.out.length > 0 && this.in.length > 0);
+    }
     /*
 
     serialize - deserialize
-
     - write to json structure
     - read from json structure
      */
@@ -144,12 +150,19 @@ class Neuron {
 }
 
 class Connection {
+    /**
+     * Constructor method for creating a new connection.
+     * @param {Object} input - The input node of the connection.
+     * @param {Object} output - The output node of the connection.
+     * @param {Number} weight - The weight of the connection. If not provided, a random weight will be generated.
+     */
     constructor(input , output, weight){
         this.in = input
         this.out = output
         this.weight = weight || getRandom()
         this.deltaSum=  0.0
         input.out.push(this)
+        output.in.push(this)
     }
     setDelta(delta){
         this.deltaSum += delta * this.in.getValue()

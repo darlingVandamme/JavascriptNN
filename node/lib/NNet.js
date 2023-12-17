@@ -177,12 +177,15 @@ class NNet{
         this.trainings ++
 
         // backpropagate Delta recursive
-        //this.neurons.forEach((n,i)=>n.getDelta())
+        this.neurons.forEach((n)=>n.getDelta())
 
         // backpropagate delta iterative  backwards
-        for(let i=this.neurons.length-1 ; i>=0; i--){
+        /*for(let i=this.neurons.length-1 ; i>=0; i--){
             this.neurons[i].getDelta()
-        }
+        }*/
+
+        // hahaha, reverse is much much slower
+        //this.neurons.reverse().forEach(n=> n.getDelta())
 
         // adjust weights
         if (this.trainings % this.batchSize == 0){

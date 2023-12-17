@@ -1,6 +1,6 @@
 import {NNet} from "../index.js";
 import {getImages} from "./readImages.js";
-import * as tf from '@tensorflow/tfjs';
+import * as tf from '@tensorflow/tfjs-node';
 
 const model = tf.sequential();
 model.add(tf.layers.dense({units: 30, activation: 'sigmoid', inputShape: [28*28]}));
@@ -37,7 +37,7 @@ function train(images){
     console.time("train")
     let startTime = Date.now()
 
-    let imageData = tf.tensor( images.filter((d,i)=>i<trainSize).map((d)=> d.pixels.map(p=>p/256) ))
+    let imageData = tf.tensor( images.filter((d,i)=>i<trainSize).map((d)=> d.pixels.map(p=>p) ))
     let labelData = tf.tensor(images.filter((d,i)=>i<trainSize).map((d)=> resultArray(d.label)))
 
     return model.fit(imageData, labelData, {
@@ -85,7 +85,7 @@ function check(size,show){
     let testImages = getImages(true,start,start+size)
     let correct = 0
     for (let i=0;i<testImages.length;i++) {
-        let img = testImages[i].pixels.map((d)=> d/256)
+        let img = testImages[i].pixels.map((d)=> d)
         let output = model.predict(tf.tensor(1,img))
         if (show) console.log(output)
 

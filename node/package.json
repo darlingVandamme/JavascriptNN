@@ -4,14 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \\\"Error: no src specified\\\" && exit 1"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Geert Van Damme",
   "license": "ISC",
   "type": "module",
   "dependencies": {
     "canvas": "^2.11.2",
     "@tensorflow/tfjs-node": "^4.14.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
   }
 }
