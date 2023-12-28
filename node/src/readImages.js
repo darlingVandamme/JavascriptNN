@@ -1,74 +1,69 @@
 import fs from 'fs';
-import path from 'path'
-// import  {createCanvas} from 'canvas';
+import path, {dirname} from 'path'
+import  {createCanvas} from 'canvas';
 
 // https://stackoverflow.com/questions/25024179/reading-mnist-dataset-with-javascript-node-js
 
-import { URL } from 'url';
-const __filename = new URL('', import.meta.url).pathname;
-const __dirname = new URL('.', import.meta.url).pathname;
-let mnistRoot = '../../../MNIST/'
+import {fileURLToPath, URL} from 'url';
 
-let trainData
-let testData
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-function getImages(test, start, end) {
-    if (!trainData){
-        trainData = readMNIST(false,0,60000)
-        testData = readMNIST(true,0,10000)
+let mnistRoot = '/../../../MNIST/'
+
+const images = []
+
+function getImages(start, end) {
+    if (images.length==0){
+        readMNIST("train")
+        readMNIST("t10k")
     }
-    let data = trainData
-    if (test){
-        data = testData
-    }
-    return data.slice(start,end)
+    return images.slice(start,end)
+}
+function getTestImages(start, end) {
+    return getImages(start+60000,end+60000)
 }
 
-function readMNIST(test, start, end) {
-    let imageType = "train"
-    if (test ){
-        imageType = "t10k"
-    }
-    console.log("reading images "+test)
+function readMNIST(imageType, start, end) {
+    console.log("reading images "+imageType)
     if(!fs.existsSync(__dirname + mnistRoot+imageType+"-images.idx3-ubyte")){
         console.log("MNIST files not found")
         console.log("looking for MNIST files at location "+ path.resolve(__dirname + mnistRoot))
+        console.log(__dirname + mnistRoot+imageType+"-images.idx3-ubyte")
         throw new Error("MNIST files not found");
     }
     let dataFileBuffer = fs.readFileSync(__dirname + mnistRoot+imageType+"-images.idx3-ubyte");
     let labelFileBuffer = fs.readFileSync(__dirname + mnistRoot+imageType+'-labels.idx1-ubyte');
 
-    let pixelValues = [];
+    console.log("length "+dataFileBuffer.length)
+    const max = labelFileBuffer.length-8
+    console.log("max "+max)
+    const imgData = new Uint8Array(dataFileBuffer,0)
+    const labelData = new Uint8Array(labelFileBuffer,0)
 
-    for (let image = start; image < end; image++){
-        let pixels = [];
-        for (let y = 0; y <= 27; y++){
-            for (let x = 0; x <= 27; x++) {
-                pixels.push(dataFileBuffer[(image * 28 * 28) + (x + (y * 28)) + 16]);
-            }
-        }
-        // todo use typed arrays???
-        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Typed_arrays
-
-        let imageData  = {};
-        imageData.index = image;
-        imageData.label = labelFileBuffer[image + 8];
-        imageData.pixels = new Float32Array(pixels.map(p=>p/256));
-        pixelValues.push(imageData);
+    for (let i = 0; i < max; i++){
+        let pixels = Float32Array.from(imgData.subarray(16+(i*28*28), 16+((i+1)*28*28))) //  [...imgData.slice(i*(28*28),(i+1)*(28*28))]
+        images.push({
+            index: i,
+            label: labelData[i+8],
+            pixels : pixels,
+            doublePixels: pixels.map(p => ( p *1.0)/256 )
+        })
     }
-    return pixelValues;
+    return images
 }
 
-/*function saveMNIST(start, end) {
+function saveMNIST(start, end) {
     const canvas = createCanvas(28, 28);
     const ctx = canvas.getContext('2d');
-    var pixelValues = readMNIST(true, start, end);
+    //var pixelValues = getImages( start, end);
+    var pixelValues = getTestImages( start, end);
     pixelValues.forEach(function(image)
     {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        for (var y = 0; y <= 27; y++)
+        for (var y = 0; y < 28; y++)
         {
-            for (var x = 0; x <= 27; x++)
+            for (var x = 0; x < 28; x++)
             {
                 var pixel = image.pixels[x + (y * 28)];
                 var colour = 255 - pixel;
@@ -80,14 +75,15 @@ function readMNIST(test, start, end) {
         fs.writeFileSync(__dirname + mnistRoot+`images/image${image.index}-${image.label}.png`, buffer)
     })
 }
-*/
 
 function printImage(index){
-    let image = getImages(true,index,index+1)[0]
+    let image = getImages(index,index+1)[0]
     console.log(JSON.stringify(image))
 }
 
-export {getImages}
+export {getImages,getTestImages}
 
-// saveMNIST(20, 50);
-// printImage(20)
+ saveMNIST(9980,10000);
+/*const startTime = Date.now()
+printImage(20)
+console.log(Date.now()-startTime)*/

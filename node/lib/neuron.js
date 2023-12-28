@@ -46,7 +46,7 @@ class Neuron {
     }
 
     ff(){
-        this.z = this.in.reduce((prev, conn) => prev + (conn.weight * conn.in.getValue())
+        this.z = this.in.reduce((previous, conn) => previous + (conn.weight * conn.in.getValue())
         , this.bias)
         //count("ff")
 
@@ -88,8 +88,8 @@ class Neuron {
                 this.delta = ((this.value - this.expected) * zDeriv)
             } else{
               // other neurons
-                this.delta = this.out.reduce((prev, conn) => {
-                    return prev + (conn.out.getDelta() * conn.weight )
+                this.delta = this.out.reduce((previous, conn) => {
+                    return previous + (conn.out.getDelta() * conn.weight )
                 }, 0) * zDeriv //
             }
             this.in.forEach((conn, i) => {
@@ -169,6 +169,7 @@ class Connection {
     }
     learn(batchStep){
         this.weight -= batchStep * this.deltaSum
+        //console.log("compare  "+this.deltaSum+"  to  "+this.out.deltaSum)
         this.deltaSum=0
     }
 }

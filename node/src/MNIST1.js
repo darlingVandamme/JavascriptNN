@@ -1,14 +1,9 @@
 import {NNet} from "../index.js";
-import {getImages} from "./readImages.js";
+import {getImages,getTestImages} from "./readImages.js";
 import {countlog} from "../lib/counter.js"
 
 let net = new NNet(28*28)
 
-function resultArray(label){
-    let result = new Array(10).fill(0,0,10)
-    result[label] = 1
-    return result
-}
 
 function run() {
     //console.time("total")
@@ -16,12 +11,25 @@ function run() {
     net.batchSize = 10
     net.epochs = 3
     //net.translateInput=  (v)=> v.map(item=> item/256 )
+    net.translateExpected = (expexted) =>{
+        let result = new Array(10).fill(0,0,10)
+        result[expexted] = 1
+        return result
+    }
+    net.translateOutput = (output)=> {
+        let result = {}
+        result.label = output.reduce((prev, val, i, arr) => val > arr[prev] ? i : prev, 0)
+        result.score = output[result.label]
+        result.output = output
+        return result
+    }
+
     net.calculateCosts = true
     //net.addLayer(35)
     net.addLayer(30)
     net.addLayer(10)  // output
 
-    let images = getImages(false,0,50000)
+    let images = getImages(0,50000)
     // console.log(JSON.stringify(images[0]))
     train(images)
     check(10000,true)
@@ -34,15 +42,8 @@ function train(images){
     for (let epochs=0;epochs<net.epochs ; epochs++) {
         //net.step = net.step*0.9
         images.forEach(image=>{
-            net.train(image.pixels, resultArray(image.label), image.label)
-            if (net.trainings%5000==0){
-                if (net.bestNetwork){
-                    // switch to better
-                    console.log("switch to better ")
-                    net.bestNetwork.epochs = net.epochs
-                    //net = net.bestNetwork
-
-                }
+            net.train(image.doublePixels, image.label, image.label)
+            if (net.trainings%10000==0){
                 console.log("train "+net.trainings+"  Cost "+net.getAverageCost(100).toFixed(6))
             }
         })
@@ -58,12 +59,11 @@ function check(count,show){
     let startTime = Date.now()
     let start = Math.floor(Math.random()*(10000 - count))
     if (show) console.log("test images "+start+" "+count )
-    let testImages = getImages(true,start,start+count)
+    let testImages = getTestImages(start,start+count)
     let correct = 0
     testImages.forEach((image,i)=> {
-        let output = net.check(image.pixels)
+        let result = net.check(image.doublePixels)
         //let result = {label: net.getHighest(output), score:1}  //
-        let result= net.getResult(output)
         if(image.label == result.label) correct++
 
         /*if (show) console.log(((image.label == result.label)?"check ":"MISS ")

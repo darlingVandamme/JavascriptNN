@@ -36,7 +36,7 @@ function test(){
     net.feed([0,0,0,0,0])
     console.log("expected  [????] ",net.getOutput())
 
-    console.log("Network "+net.layers+" layers "+ net.allNeurons.length+" neurons  ("+net.allNeurons().length+") "+net.allNeurons.reduce((prev, n)=>(prev+n.in.length),0)+" weights" )
+    console.log("Network "+net.layers+" layers "+ net.neurons.length+" neurons  ("+net.allNeurons.length+") "+net.allNeurons.reduce((prev, n)=>(prev+n.in.length),0)+" weights" )
 
     console.log("Avg Cost "+ net.getAverageCost().toFixed(5))
 

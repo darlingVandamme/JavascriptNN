@@ -8,7 +8,6 @@ class NNet{
         this.trainings = 0
         this.batches =0
         this.count = 0
-        this.patterns = {}
         // keep a list of neurons
         // makes it easier to reset and serialize
         this.neurons = [] // Hidden and output Neurons
@@ -110,6 +109,12 @@ class NNet{
         return value
     }
 
+    translateExpected(value){
+        // allow translate of object to expected output vector
+        // default do nothing
+        return value
+    }
+
     check(item){
         this.feed(this.translateInput(item))
         return this.translateOutput(this.getOutput())
@@ -117,7 +122,7 @@ class NNet{
 
     //getCost(result)
     getCost(){
-        return this.output.reduce((prev,n,i)=> (prev + (Math.pow((n.expected - n.value),2  ) / (2*this.output.length))) , 0)
+        return this.output.reduce((previous,n,i)=> (previous + (Math.pow((n.expected - n.value),2  ) / (2*this.output.length))) , 0)
         // return this.output.reduce((prev,n,i)=> (prev + (Math.pow((n.expected - n.value),2  ) / (this.output.length))) , 0)
     }
     getAverageCost(length){
@@ -131,47 +136,22 @@ class NNet{
                 slice = [...slice, ...this.costs.slice(this.costIndex - length)]
             }
         }
-        return slice.reduce((prev,cost)=>{return prev+cost},0)/slice.length
+        return slice.reduce((previous,cost)=>{return previous+cost},0)/slice.length
     }
 
-    getResult(pattern){
-        // todo cleaner
-        let result = null
-        let best = 0
-        Object.keys(this.patterns).forEach(k=>{
-            let p = this.patterns[k]
-            // 1 - squared errors 
-            let score = 1 - (p.pattern.reduce((prev,item,i)=>{
-                return prev + Math.pow((item-pattern[i]),2)},0.0) / p.pattern.length)
-            // console.log("check "+k+" "+score)
-            if (score > best) {
-                best = score
-                result = {label:p.label,score:score, pattern:p.pattern,trained:p.count}
-            }
-        })
-        return result
-    }
 
     getHighest(pattern){
         /*let max = Math.max(...pattern)
         return pattern.indexOf(max)
          */
-        return pattern.reduce((prev,val,i,arr)=> val>arr[prev]?i:prev,0)
+        return pattern.reduce((previous,val,i,arr)=> val>arr[previous]?i:previous,0)
     }
 
-    train(item, expected, label){
-        if (label != null && label != undefined){
-            let pattern = this.patterns[label]
-            if (!pattern) {
-                pattern = { label:label, count:0, pattern:expected}
-                this.patterns[label] = pattern
-            }
-            pattern.count++
-        }
+    train(item, expected){
         let output = this.check(item)
-
         // store the expected values in the output neurons
-        this.output.forEach((n,i)=> {n.expected = expected[i] })
+        let expectedVector = this.translateExpected(expected)
+        this.output.forEach((n,i)=> {n.expected = expectedVector[i] })
         this.costIndex = this.trainings % this.costsSize
         this.costs[this.costIndex] = this.getCost()
         this.trainings ++
@@ -196,7 +176,7 @@ class NNet{
             // recursive
             //this.input.forEach((n,i)=>n.learn(this.step))
             // iterative
-            this.neurons.forEach((n, i)=>n.learn(this.step/this.batchSize))
+            this.neurons.forEach((n)=>n.learn(this.step/this.batchSize))
             //console.log(" Cost  \t"+this.trainings+" \t "+this.getCost())
             // keep a reference to the best network up till now
             /*if (this.getAverageCost(100 ) < this.bestCost ){
