@@ -1,25 +1,22 @@
 # Building an Object Oriented Neural Network
-# An Object Oriented perspective/view on Neural Networks
-# Encapsulating a javascript Neural Network
 
-The basic concept of a Neural Network fits so nicely into object-oriented programming and yet
-most of the sample code we find online in tutorials looks ugly, old-fashioned procedural.  
+The basic concept of a Neural Network fits so nicely into the object-oriented programming paradigm and yet
+most of the sample code we find online in tutorials looks ugly, old-fashioned procedural and difficult to read.  
 
-The basic concept of a Neural Network fits so nicely into object-oriented programming and yet
-there's almost no sample code that's cleanly, properly encapsulated, OO 
+[picture]
+Let's see if we can build a nice, clean Object-Oriented Neural Network from scratch.
 
-Let's build a nice clean Object-Oriented Neural Network from scratch.
-
-I already learned the underlying basics of neural networks in the early 1990's 
+I already learned the basics of neural networks in the early 1990's 
 and did quite some experiments with AI and ML. But with the recent wave of new AI tools appearing everywhere, 
-I wanted to really know and understand the low-level details. 
+I wanted to really know and understand more of the low-level details. 
 The basic concept of a neural network is nicely explained and illustrated in this [3blue1brown](https://www.youtube.com/watch?v=aircAruvnKk&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi) video series.
 The links under the video led me to Michael Nielsen's [online book](http://neuralnetworksanddeeplearning.com), which explained some more details.
-If you're new to neural networks, I would advise you to first watch the video's or read the first (or first 2) chapter in the book.
+If you're new to neural networks, I would advise you to first watch the video's or read the first (or first 2) chapter in the online book.
 
 Although I really liked the explanation of how such a network works, I found the code samples and  
 the [accompanying python code](https://github.com/mnielsen/neural-networks-and-deep-learning/tree/master)
 (of course python, what else... later more on that...) quite confusing and difficult to fully comprehend and match with the theory.
+
 Coming from a Java and Javascript background, I find the code not as cleanly structured and nicely encapsulated as I'm used to.
 A crucial concept like 'neuron' doesn't even appear anywhere in the code itself, only in the comments.
 The main feed-forward algorithm is coded as
@@ -35,13 +32,13 @@ It works, sure, but to me, this code doesn't reflect what the feed-forward algor
 
 ![](./img/Neuron1.svg)
 
-Neural networks are naturally suited to be implemented elegantly using an object-oriented programming paradigm. 
+Because they are based on a biological-physical model or metaphor, neural networks are naturally suited to be implemented elegantly using an object-oriented programming paradigm. 
 However, most examples use a dense, procedural, and even ugly, coding practice.
 
 I did a quick google search to see if I could find better, nicer looking implementations, but I was quite disappointed with the results.
 Some [articles](https://towardsdatascience.com/understanding-and-implementing-neural-networks-in-java-from-scratch-61421bb6352c)  and [videos](https://www.youtube.com/watch?v=NWQETJz8fII) have promising titles, but when the presented code starts with an array of arrays called 'w'
 it's not going to fit in my view of clean, readable code. 
-This impression was consolidated when the article concludes: 
+This impression was further endorsed when the article concludes: 
 > Being a fellow Python programmer I was not very comfortable with Java
 
 Yeah, I could have guessed...
@@ -61,10 +58,8 @@ Above all, the purpose of articles like these is to teach us something.
 The sample code should be an illustration and a clarification of the mathematical and computational theory.
 In most cases, however, the code reflects an alternate, matrix oriented, view on the implemented algorithms.
 
-[Code example]
-
 The program doesn't represent a neural network like it is explained in all those fancy pictures, inspired by the neurons we find in our brain.
-Instead, it mimics something else, that can be shown to be a mathematically equivalent model to a neural network.
+Instead, it mimics something else, that can be shown to be a mathematically equivalent model to the explained neural network.
 
 But, especially in an educational context like the articles and video's mentioned, I'd rather see code that really reflects this brain analogy.
 I don't want an illustration of an equivalent alternative. I want to see the real thing. 
@@ -77,15 +72,17 @@ so that we can use these fancy, speedy matrix libraries that do the magic much q
 As if neural networks need more, confusing, hocus pocus than there already is. And GPU's oh yeah! GPU's! an extra opacity layer, everyone seems to love.
 
 The how, and why behind the functioning of neural networks work is already a mystery, even to most of the people programming and using them. 
-We're not going to benefit of an extra layer of black box obscurity.
+We're not going to benefit from an extra layer of black box obscurity.
 
 The code examples in these articles have an educational, illustrative purpose. They shouldn't focus on performance.
 
 Using matrix calculations in introductory articles and tutorials on AI is a perfect example of [premature optimization](https://xkcd.com/1691/).
-It's perfectly possible that the matrix approach is necessary to build the large scale AI tools we see popping up everywhere recently.
+It's perfectly possible that the matrix approach is absolutely necessary to build the large scale AI tools we see popping up everywhere recently.
 But actually, we simply don't know if we don't try it out. 
 It might well be possible that the matrix idiom leads us to a programming tunnel vision that poses its own limitations and boundaries
 that are currently not questioned.  The matrix calculations, besides giving us a supposed speed boost, limit our creativity and mental freedom.
+
+> But I don't like to be limited in my creativity!
 
 Let's say eg. that I want to see what happens when layers are not fully connected.
 I want to connect the neurons to the previous layer based on some positional property of the neurons. 
@@ -93,8 +90,6 @@ After all, the example that we will use with the images is 2D, but we try to pro
 The same basic idea we see in so-called convolutional networks, but that's again very much matrix oriented. 
 Maybe my simplistic idea of non fully connected layers might turn out to be totally useless. 
 But in the matrix approach, I lack the possibility to just simply try it out and experiment with it. 
-
-And I don't like to be limited in my creativity!
 
 To rephrase this in the typical neural lingo: the matrix approach inherently contains the danger
 of being stuck in a local minimum in our search to solving real world problems.
@@ -111,15 +106,16 @@ You might want to skip this paragraph if you like python ;-)
 A lot of the AI/ML applications are implemented in python.  
 The unfortunate thing is that python actually is a slow, [bad programming language](https://medium.com/nerd-for-tech/python-is-a-bad-programming-language-2ab73b0bda5) and even 
 bad for the [environment](https://greenlab.di.uminho.pt/wp-content/uploads/2017/10/sleFinal.pdf).
-It's a bit strange that python made it as the almost default language for AI/ML and data analysis. 
+It's a bit strange that python made it as the almost default language for AI/ML and data analysis.
+A programming language is not good or bad on its own, but its quality largely depends on how and where it is applied.
 Apart from the remarks made in the article, I often noticed that python enables or even encourages bad programming habits. 
 Partly because python itself is so slow, programmers habitually give up code clarity over presumed speed gains.
 
 If we look at the python code examples from [neuralnetworksanddeeplearning](https://github.com/mnielsen/neural-networks-and-deep-learning/tree/master/),  
 I have the impression that quite some design choices are made because of supposed speed optimization.
 
-The Cost function itself, while being such a crucial part of the training process, isn't even implemented at all. Not even as an illustration.
-The feed forward routine, the basic routine of the network, on the other hand, is implemented twice.
+- The Cost function itself, while being such a crucial part of the training process, isn't even implemented at all. Not even as an illustration.
+- The feed forward routine, the basic routine of the network, on the other hand, is implemented twice.
 Once as the feedforward routine itself and once again inside the backprop routine. 
 I guess that's because in the feedForward, the Z values (the weighted sum of incoming neurons, before the activation function is applied) 
 are not stored in memory. However, in the backpropagation routine, we do need the neurons' Z values.
@@ -128,11 +124,12 @@ If you try it out, however, the assumed optimization by leaving out storing the 
 This [duplicate code](https://en.wikipedia.org/wiki/Duplicate_code) is a violation of the [DRY principle](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself).
 This is especially important because those few lines are the absolute center of the whole Neural Network.
 
+
 ## OO Javascript implementation
-So, how did I implement this Neural Network? 
+So, how did I implement my Neural Network? 
 
 I won't explain the meaning of the different neural network concepts and terminology. 
-As said before, read [the book](http://neuralnetworksanddeeplearning.com) and watch the videos. To keep it easy to compare, I will be focussing on the exact same example network as in the first 2 chapters of the book and the videos.
+As said before, read [the book](http://neuralnetworksanddeeplearning.com) and watch the videos. To make it easy to compare, I will be focusing on the exact same example network as in the first 2 chapters of the book and the videos.
 A completely connected network with 1 hidden layer (30 neurons) and 10 output neurons to recognize written numbers, trained on the [MNIST dataset](https://yann.lecun.com/exdb/mnist/).
 (There seems to be something wrong with the original website, but you can download the dataset at several other locations, like [Kaggle](https://www.kaggle.com/datasets/hojjatk/mnist-dataset))
 
@@ -144,9 +141,10 @@ Also, we prefer to use the dedicated array looping functions like forEach, map a
 ### Neuron
 We'll use a bottom up approach and start with the Neuron itself. 
 After all, just like in the brain analogy, the network is just an emergent concept that simply holds together a bunch of neurons. 
-The network itself gets its functionality and power from the complex combination of neurons, who are doing most of the work. 
+The network itself gets its functionality and power from the complex combination of intertwined neurons, who are doing most of the work. 
 Obviously, at the basis of the code is the Neuron class.
 (Well, obviously? Then why do most sample implementations don't even have a Neuron class???)
+
 The Neuron class keeps the values (outputvalue a and z), the neurons' bias and a list of connections to the previous and next layer.
 
 ![](./img/Neuron.svg)
@@ -160,7 +158,7 @@ class Neuron {
         this.in = []
         this.out = []
         this.activate = sigmoid
-        this.value = null
+        this.value = null  // a
         this.bias = getRandom()
         this.z = 1.0
     }
@@ -211,7 +209,7 @@ At first this mechanism might look a bit strange and backwards to people who are
 Later on, we will show that this recursive, backwards approach can be changed to a forward one (with a certain extra speed gain) by simply adding a single line of code. 
 But I do think this implementation has a certain beauty in it, that might become clear when we try out some more experimental designs.
 
-There are several possible ways to calculate this weighted sum, but for now we think the reduce makes the code quite elegant.
+There are several possible ways to calculate this weighted sum, but for now we think the reduce function makes the code quite elegant.
 For people less used to the functional reduce approach, the alternative can be a more classical for() loop
 ```javascript
         this.z = this.bias;
@@ -232,7 +230,7 @@ or
 Clean code and proper encapsulation leads to better testability and more maintainable code.
 The nice thing of having cleanly encapsulated code is that it makes it easier to write unit tests.   
 I admit that in my own projects, I wasn't always a diligent writer of unit tests. 
-Now I just tell my assistant that he's a rock-star javascript programmer and asks him to write me the tests, like
+Now I just tell my editor-assistant that he's a rock-star javascript programmer and ask him to write me the tests, like
 ```javascript
 import Neuron  from '../lib/neuron.js';
 
@@ -288,7 +286,7 @@ describe('Neuron Class', () => {
 
 ### NNet
 The last class we need is the Network itself to keep the whole structure together
-and provide the input and output functions and some other decorations.
+and provide the input and output functions and some additional decoration methods.
 
 ```javascript
 import Neuron from "./neuron.js";
@@ -298,17 +296,15 @@ class NNet {
         // keep a list of all neurons
         // makes it easier to clone and serialize
         this.allNeurons = []
-        this.input = Array.from({length: inputSize}, (n1, i) => {
-            return new Neuron()
-        })
         this.output = this.input
         this.layers = 1
         this.count = 0
+        this.input = this.addLayer(inputSize)
         // keep a list of hidden and output neurons
         // makes it easier to reset and ff
-        this.neurons = []  
+        this.neurons = []
     }
-
+    
     addLayer(size) {
         let layer = Array.from({length: size}, (n1, i) => {
             let n = new Neuron()
@@ -316,7 +312,7 @@ class NNet {
             n.connectLayer(this.output)
             return n
         })
-        this.output = layer
+        this.neurons.push(...layer.filter(n=> !n.isInput())) // add all non input neurons        this.output = layer
         this.layers++
     }
 
@@ -334,7 +330,7 @@ class NNet {
         return this.output.map(n => n.getValue())
     }
 
-    // convenience methods
+    // convenience / decoration methods
     translateInput(value) {
         // allow translate of any object to list of values
         // default do nothing
@@ -358,7 +354,8 @@ The NNet object mainly keeps an input and an output array of Neurons and some co
 It's possible to implement the network with only the input and output and no direct access to the neurons in hidden layers, 
 but it's easier for routines like reset if we do keep a list of neurons. 
 - this.neurons lists the neurons of the hidden and output layers.
-- this.allNeurons is a convenience method that keeps a list of all the neurons of the whole network.
+- this.allNeurons is a convenience variable that keeps a list of all the neurons of the whole network.
+It could also be implemented as ``[…this.input, … this.neurons]``
 
 When we create a new Network we only create the input layer and make the output layer also point to the input layer. 
 addLayer (you might have guessed) adds a new layer to the network, fully connected to the previous last layer. 
@@ -419,7 +416,7 @@ When all the samples in the mini batch are evaluated, we adjust the values (lear
 in the direction the aggregated delta's show us (=the opposite of the average gradient) and start a new mini batch.
 Again, the main code for evaluating and adjusting the values is done inside the Neuron and Connection objects.
 
-### train NNet
+### Train NNet
 For the NNet, the training routine is 
 - Feed the training sample image to the input layer and through the network.
 - Assign the expected values to the output layer
@@ -475,7 +472,7 @@ through the network and calculate all values in the correct order anyhow.
 
 ## Train Neuron
 Now for the neurons, we need to implement the getDelta (accumulate the differences) and learn methods (adjust weights and biases) where the real work is done.
-If I correctly interpreted the original python code, this should become something like:
+If I interpreted the original python code correctly, this should become something like:
 
 ![](./img/Neuron3.svg)
 
@@ -559,15 +556,15 @@ class Connection {
 }
 ```
 
-That's it. This code is now our simple Neural Network library that can train a network and use it.
+That's it. This code is now the basic building blocks of our simple Neural Network library.
 
 ### training the handwritten numbers 
 
-Now we can try out if we can make the network recognise the handwritten MNIST numbers, our original goal.
+Now we can try out if we can make the network recognize the handwritten MNIST numbers, our original goal.
 
 ```javascript
 import {NNet} from "../index.js";
-import {getImages} from "./readImages.js";
+import {getImages,getTestImages} from "./readImages.js";
 
 const net = new NNet(28*28)
 
@@ -593,8 +590,7 @@ function run() {
         return result
     }     
     
-    let images = getImages(0,50000)
-    train(images)
+    train(50000)
     check(10000,true)
 }
 
@@ -621,7 +617,7 @@ function check(count,show){
     let startTime = Date.now()
     let start = Math.floor(Math.random()*(10000 - count))
     if (show) console.log("test images "+start+" "+count )
-    let testImages = getImages(start,start+count)
+    let testImages = getTestImages(start,start+count)
     let correct = 0
     testImages.forEach((image,n)=>{
         let result = net.check(image.pixels)
@@ -649,28 +645,29 @@ What the program does is:
 - The translateInput function takes an image and translates the 0-255 grayscale integer pixels to 0-1 double values
 - The translateOutput function looks for the highest value in the output vector and returns an object that contains
 the index of the highest value (label), the value itself as an estimate of how well the number was recognized
-and the output vector itself.
+and the output vector itself. There might be better indicators for accuracy, but for now this seems fine.
 - Read the labeled image data  (I actually don't like this. It looks too pythonesque to load the whole dataset into memory, but I wanted to follow the same approach)
 - The image data is an array that contains {label, pixels} objects. Pixels is a 784 array of 0-255 grayscale values.
 - One by one, send this image data, together with the label, to the network to train it.
-- After every 10000 images, we monitor the current average cost function result
-- After each epoch, we check 1000 test images to see what the current success rate is
+- Every 10000 images, we monitor the current average cost function result
+- After each epoch, we check 1000 test images to check the current success rate
 
 ![first epoch](./img/MNIST%20result%201.png)
 
-- after x training epochs, all 10000 test images are tested and each result is shown in the console. 
-These test images are new to the network.
-
-![test images](./img/MNIST%20result%202.png)
+- After x training epochs, all 10000 test images are tested and each result is shown in the console. 
+For every test image, which are new to the network because they don't belong to the training set, 
+the basic recognition info (hit or miss, numbers, output vector) is displayed.
 
 It looks like the network is really learning, since the average cost is mostly decreasing.
 After the first epoch of 50000 training images, the success rate, based on 1000 random test images, is 90.2%. 
-On my computer, one training batch of 50000 images takes 12-15s te complete, which is not bad.
+On my computer, one training batch of 50000 images takes 12-15s to complete, which is not bad.
 After a few training epochs we see final success rates in the range 92%-97%, which shows that the network is performing as it should.
+
+![test images](./img/MNIST%20result%202.png)
 
 It's especially interesting to see the details when the network makes a mistake.
 
-In our example images 9982 ![image5](./img/image9982-5.png) and 9986 ![image3](./img/image9986-3.png) are wrongly interpreted as a 6 and an 8 respectively.
+In our example images 9982 ![image5](./img/image9982-5.png) and 9986 ![image3](./img/image9986-3.png) are wrongly interpreted. In this case as a 6 and an 8 respectively.
 The relatively low values (0.765 and 0.385) in the output vector reflect the insecurity of these results. 
 
 You're all invited to download the code at [], try it out and experiment with it.
@@ -679,9 +676,8 @@ You're all invited to download the code at [], try it out and experiment with it
 
 ## Some extra's
 
-In the code you can see some additional features that have not yet been discussed here. 
-These are not present in the Nielsen's python code, and are not strictly needed. 
-But it might be interesting to give a bit more information here. 
+In the code you can see some additional features that have not yet been discussed here.
+These are not strictly needed but it might be interesting to give a bit more information here. 
 
 ###  Forward feedforward
 I mentioned before that the main feedforward algorithm might seem a bit backwards / recursive.
@@ -696,13 +692,13 @@ Although I still think this approach looks nice and might have some interesting 
         this.neurons.forEach((n,i)=>{n.ff()})     
     }
 ```
-It actually speeds things up quite a bit, since there's less unneeded recursive method calls.
+the neurons evaluate their state in forward order, and it actually speeds things up quite a bit, since there's less unneeded recursive method calls.
 
 ### readImages
 The MNIST dataset is split into 2 times 2 files. At least the version I downloaded. 
 One file contains the 0-255 grayscale pixel values of the images. Another file contains the labels, the number the corresponding image represents. 
 There's one fileset for the 60000 train images and one set of 10000 test images. 
-I just read the 2 files and store all the images in 1 array of 70000 images.
+I just read the 2 files and store all the images in 1 array of 70000 image objects.
 The brute force approach of synchronously reading all data in memory and then sending that to the network doesn't feel nice. 
 It won't scale when the training data becomes larger and might not fit in memory.
 
@@ -710,11 +706,12 @@ It won't scale when the training data becomes larger and might not fit in memory
 After each training input, the cost function is calculated and stored in a circular array.
 I don't want to keep an array of millions of training samples, but simply keeping the most recent 500 or so 
 results in an array can give us an indication how the training is evolving.
-At first, I added a boolean calculateCost variable, to specify whether I should calculate the cost of every training iteration or not.
-It turned out to be a premature optimization as well. Calculating the cost of every training iteration adds some load on the system,
-but it's hardly measurable. The overall timings stay in the same range, so I calculate the cost anyhow.
+
+At first, I added a boolean calculateCost variable, to specify whether I should calculate the cost of every training iteration or not. 
+It turned out to be a premature optimization as well. Calculating the cost of every training iteration surely adds some extra load on the system,
+but it's hardly measurable. The overall timings stay in the same range, so I dropped this variable and calculate the cost anyhow.
 Instead of choosing the number of training epochs in advance, watching the cost evolution allows us to decide at what point,
-extra training samples don't make the network perform any better, and so we can stop the training session.
+extra training samples don't make the network perform any better, and so we can stop the training session or make other optimizations.
 
 ```javascript
 class NNet{
@@ -761,10 +758,11 @@ Parallel to the javascript example, there's also a java implementation.
 The java code follows most of the assumptions and rules we discussed above and looks very much the same as the javascript samples. 
 It would be great to further extend this to other languages as well. 
 C#, Go, Ruby, Scala, Object-C .... 
-But I'm also thinking about implementations in SQL or MongoDB aggregation pipelines.  
-I look forward to your contributions.
+But I'm also thinking about implementations in SQL or MongoDB aggregation pipelines.
 - Implement the handwriting neural network 
 - Make the code as clean as possible, with this javascript or java code as a guide.
+- Encapsulate the code in Neuron, Connection and NNet classes or similar
 - Don't focus on performance if it impacts readability
 
+I look forward to your contributions.
 
