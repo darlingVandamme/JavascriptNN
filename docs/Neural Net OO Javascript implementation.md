@@ -349,7 +349,6 @@ class NNet {
     }
 }
 ```
-
 The NNet object mainly keeps an input and an output array of Neurons and some counters and network parameters.
 It's possible to implement the network with only the input and output and no direct access to the neurons in hidden layers, 
 but it's easier for routines like reset if we do keep a list of neurons. 
