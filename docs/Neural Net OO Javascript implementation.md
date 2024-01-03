@@ -297,7 +297,6 @@ class NNet {
         // makes it easier to clone and serialize
         this.allNeurons = []
         this.output = this.input
-        this.layers = 1
         this.count = 0
         this.input = this.addLayer(inputSize)
         // keep a list of hidden and output neurons
@@ -313,7 +312,6 @@ class NNet {
             return n
         })
         this.neurons.push(...layer.filter(n=> !n.isInput())) // add all non input neurons        this.output = layer
-        this.layers++
     }
 
     reset() {
@@ -593,9 +591,10 @@ function run() {
     check(10000,true)
 }
 
-function train(images){
+function train(size){
     console.time("train")
     let startTime = Date.now()
+    let images = getImages(0,size)
     for (let epochs=0;epochs<net.epochs ; epochs++) {
         images.forEach(image=>{
             net.train(image.pixels, image.label) 
@@ -624,8 +623,6 @@ function check(count,show){
         if (show) console.log(((image.label == result)?"check ":"MISS ")
             +i+" "+image.label+"  <=> "+result.label+"  "+result.score.toFixed(4)+"   "+ output.map(r=>r.toFixed(3)))
     })
-
-    if (show) console.log("Network "+net.layers+" layers "+ net.neurons.length+" neurons  ("+net.allNeurons().length+") "+net.neurons.reduce((previous,n)=>(previous+n.in.length),0)+" weights" )
     if (show) console.log("Training iterations "+ net.trainings+"  TrainTime "+net.trainTime+" "+(net.trainings/(net.trainTime/1000)).toFixed(2)+" Trainings/s " + net.step +" step")
     if (show) console.log("Training step:"+  net.step +"   BatchSize: "+net.batchSize)
     if (show) console.log("Check iterations "+ count+" "+(1000*count/(Date.now()-startTime)).toFixed(2)+" Checks/s ")
@@ -669,8 +666,8 @@ It's especially interesting to see the details when the network makes a mistake.
 In our example images 9982 ![image5](./img/image9982-5.png) and 9986 ![image3](./img/image9986-3.png) are wrongly interpreted. In this case as a 6 and an 8 respectively.
 The relatively low values (0.765 and 0.385) in the output vector reflect the insecurity of these results. 
 
-You're all invited to download the code at [], try it out and experiment with it.
-[code repository]
+You're all invited to download the code at the [repository](https://github.com/darlingVandamme/OONeuralNetwork), try it out and experiment with it.
+
 
 
 ## Some extra's
