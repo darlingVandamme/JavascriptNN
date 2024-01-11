@@ -30,7 +30,7 @@ The main feed-forward algorithm is coded as
 ```
 It works, sure, but to me, this code doesn't reflect what the feed-forward algorithm really is.  
 
-![](./img/Neuron1.svg)
+![](./img/neuron.gif)
 
 Because they are based on a biological-physical model or metaphor, neural networks are naturally suited to be implemented elegantly using an object-oriented programming paradigm. 
 However, most examples use a dense, procedural, and even ugly, coding practice.
@@ -471,7 +471,7 @@ through the network and calculate all values in the correct order anyhow.
 Now for the neurons, we need to implement the getDelta (accumulate the differences) and learn methods (adjust weights and biases) where the real work is done.
 If I interpreted the original python code correctly, this should become something like:
 
-![](./img/Neuron3.svg)
+![](./img/BackProp.svg)
 
 ```javascript
 class Neuron {
