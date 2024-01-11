@@ -3,7 +3,8 @@
 The basic concept of a Neural Network fits so nicely into the object-oriented programming paradigm and yet
 most of the sample code we find online in tutorials looks ugly, old-fashioned procedural and difficult to read.  
 
-[picture]
+![Dall-e impression about the subject](./img/OONeural2.png)
+
 Let's see if we can build a nice, clean Object-Oriented Neural Network from scratch.
 
 I already learned the basics of neural networks in the early 1990's 
@@ -147,7 +148,7 @@ Obviously, at the basis of the code is the Neuron class.
 
 The Neuron class keeps the values (outputvalue a and z), the neurons' bias and a list of connections to the previous and next layer.
 
-![](./img/Neuron.svg)
+![](./img/Neuron2.svg)
 
 ```javascript
 let neurons = 0
