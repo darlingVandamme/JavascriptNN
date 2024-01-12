@@ -6,6 +6,7 @@ most of the sample code we find online in tutorials looks ugly, old-fashioned pr
 ![Dall-e impression about the subject](./img/OONeural2.png)
 
 Let's see if we can build a nice, clean Object-Oriented Neural Network from scratch.
+With code that really reflects the neural theory.
 
 I already learned the basics of neural networks in the early 1990's 
 and did quite some experiments with AI and ML. But with the recent wave of new AI tools appearing everywhere, 
@@ -18,7 +19,7 @@ Although I really liked the explanation of how such a network works, I found the
 the [accompanying python code](https://github.com/mnielsen/neural-networks-and-deep-learning/tree/master)
 (of course python, what else... later more on that...) quite confusing and difficult to fully comprehend and match with the theory.
 
-Coming from a Java and Javascript background, I find the code not as cleanly structured and nicely encapsulated as I'm used to.
+Coming from a Java and Javascript background, the code is not as cleanly structured and nicely encapsulated as I'm used to.
 A crucial concept like 'neuron' doesn't even appear anywhere in the code itself, only in the comments.
 The main feed-forward algorithm is coded as
 
@@ -135,7 +136,7 @@ A completely connected network with 1 hidden layer (30 neurons) and 10 output ne
 (There seems to be something wrong with the original website, but you can download the dataset at several other locations, like [Kaggle](https://www.kaggle.com/datasets/hojjatk/mnist-dataset))
 
 Let's implement this network in node / javascript without any dependencies, with a focus on clean, readable and nicely encapsulated OO code. 
-As already mentioned, we won't be focussing on performance, but it might guide us in certain implementation decisions, as long as it doesn't interfere with readability.
+As already mentioned, we won't be focusing on performance, but it might guide us in certain implementation decisions, as long as it doesn't interfere with readability.
 In the various loops and propagations, we will be mixing a recursive and an iterative approach, depending on what's most obvious or clean.
 Also, we prefer to use the dedicated array looping functions like forEach, map and reduce over old-fashioned for() iteration.   
 
@@ -533,7 +534,7 @@ class Neuron {
 
 The Neuron.getDelta() method calculates and accumulates the delta value in every neuron.
 - If the neuron is an output neuron, delta is just the difference between the output value and the expected value multiplied by the derivative of the activation function.
-- For other neurons (the hidden layers), delta is the weighted sum of the delta's of the next layer, again multiplied by the derivative. 
+- For other neurons (the hidden layers), delta is the weighted sum of the delta's of the next layer, again multiplied by the activation derivative. 
 - This delta value is propagated to all the incoming connections where each connection also keeps an accumulating delta adjusted for the incoming neuron's value. 
 
 The learn method simply adjusts the neuron's bias, calls the learn method for all incoming connections and resets the accumulated delta values.
@@ -643,6 +644,7 @@ What the program does is:
 - The translateOutput function looks for the highest value in the output vector and returns an object that contains
 the index of the highest value (label), the value itself as an estimate of how well the number was recognized
 and the output vector itself. There might be better indicators for accuracy, but for now this seems fine.
+- TranslateExpected, as it is the inverse function of translateOutput, converts a 0–9 number to an array of all zeros, except the n'th item, which is a one
 - Read the labeled image data  (I actually don't like this. It looks too pythonesque to load the whole dataset into memory, but I wanted to follow the same approach)
 - The image data is an array that contains {label, pixels} objects. Pixels is a 784 array of 0-255 grayscale values.
 - One by one, send this image data, together with the label, to the network to train it.
@@ -739,16 +741,22 @@ We should have some mechanism of storing the trained network in a file or databa
 Serializing / deserializing or cloning is also important if we want to parallelize the training or checking process.
 As much as I like the clean OO network approach, I have to admit that it's much simpler to serialize/save/clone a network when it's simply an array of arrays.
 When the network is a real network of neurons, massively linked to each other, serialization is not that easy.
+
+Which might be a good thing. From a more philosophical point of view, it doesn't feel very brain-like if the network is easy to save or clone. 
+Complexity, which is the driving condition for thinking, intelligence and consciousness, is more than just a list of numbers.
+
 The best approach to serialize the network is giving each neuron an ID, equal to the index the neuron has in the allNeurons vector.
 Then we can translate the input (and output) array(s) to a list of neuron ID's instead of neuron objects. 
 This allows us to later reconstruct the network in an identical state.
+The current codebase doesn't yet include serialization.
 
 ### Classifier
 Apart from the network that reads number images, there's also another, very simple sample network. 
 It doesn't really have any meaning, but it can be used to test if the network code is working properly. 
 It's a very small network, 5 input neurons, 10 in a hidden layer, and 2 output. 
 The network is trained on some combinations of 5 input values, like [1,0,0,2,1] and these are linked to either output [1,0] or [0,1].
-Even with this basic simple network, we see that the network can assign a correct output to input patterns that are new, but resemble the trained patterns like [1,0,0,2,2].
+
+Even with this basic simple network, we see wonderful concept that the network can assign a correct output to input patterns that are new, but resemble the trained patterns like [1,0,0,2,2].
 
 ### Java
 Parallel to the javascript example, there's also a java implementation. 
@@ -761,5 +769,7 @@ But I'm also thinking about implementations in SQL or MongoDB aggregation pipeli
 - Encapsulate the code in Neuron, Connection and NNet classes or similar
 - Don't focus on performance if it impacts readability
 
-I look forward to your contributions.
+I look forward to your contributions, so that we can create a whole list of clean sample implementations.
+
+
 
