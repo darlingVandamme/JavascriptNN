@@ -174,7 +174,7 @@ class Neuron {
         this.delta = null
     }
 
-    ff() {
+    feedForward() {
         this.z = this.in.reduce((previous, conn) => previous + (conn.weight * conn.in.getValue())
             , this.bias)
         this.value = this.activate(this.z) // sigmoid
@@ -182,7 +182,7 @@ class Neuron {
 
     getValue() {
         if (this.value === null) {
-            this.ff()
+            this.feedForward()
         }
         return this.value
     }
@@ -204,9 +204,9 @@ class Connection {
     }
 }
 ```
-When a neuron is in reset state (value === null), ff() will calculate the weighted sum of the values of the previous layer (this.in) and add the bias value of the neuron.
+When a neuron is in reset state (value === null), feedForward() will calculate the weighted sum of the values of the previous layer (this.in) and add the bias value of the neuron.
 This weighted sum is stored in this.z, after which a so-called activation function is applied to get the output value of the neuron. 
-The getValue function checks if the value for this neuron is already calculated and if not, calls the ff function.
+The getValue function checks if the value for this neuron is already calculated and if not, calls the feedForward function.
 At first this mechanism might look a bit strange and backwards to people who are used to the more classical forward moving implementation.
 Later on, we will show that this recursive, backwards approach can be changed to a forward one (with a certain extra speed gain) by simply adding a single line of code. 
 But I do think this implementation has a certain beauty in it, that might become clear when we try out some more experimental designs.
@@ -274,7 +274,7 @@ describe('Neuron Class', () => {
     });
 
     it('should calculate correct value', () => {
-        hiddenNeuron.ff();
+        hiddenNeuron.feedForward();
         let expectedZ = 1.4 // (0.5×1+0.7×1+0.2)
         let expectedA= 0.8021838885585817 // 1/(1+ exp(-(0.5×1+0.7×1+0.2)))
         expect(hiddenNeuron.z).toEqual(expectedZ);
@@ -302,7 +302,7 @@ class NNet {
         this.count = 0
         this.input = this.addLayer(inputSize)
         // keep a list of hidden and output neurons
-        // makes it easier to reset and ff
+        // makes it easier to reset and feedForward
         this.neurons = []
     }
     
@@ -363,7 +363,7 @@ The last layer added is automatically the output layer.
 At the low level, a feed forward is done by:
 - resetting all neurons
 - copying the input vector (with the size of the input layer) to the values of the neurons of the input layer
-- reading the values of the output layer (getOutput) which recursively performs a ff() for all the neurons of the network.
+- reading the values of the output layer (getOutput) which recursively performs a feedForward() for all the neurons of the network.
 
 To decorate this, there are 2 methods that default to 'do nothing' but can be used to transform an input object to a correct input array (translateInput)
 or to interpret the meaning of the output array into a meaningful result.
@@ -688,7 +688,7 @@ Although I still think this approach looks nice and might have some interesting 
         this.reset()
         this.input.forEach((n,i)=> {n.value = input[i]})
     // add this:
-        this.neurons.forEach((n,i)=>{n.ff()})     
+        this.neurons.forEach((n,i)=>{n.feedForward()})     
     }
 ```
 the neurons evaluate their state in forward order, and it actually speeds things up quite a bit, since there's less unneeded recursive method calls.
