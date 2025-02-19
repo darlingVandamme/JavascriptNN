@@ -1,6 +1,6 @@
 import {NNet} from "../index.js";
 import {getImages} from "./readImages.js";
-import * as tf from '@tensorflow/tfjs-node';
+import * as tf from '@tensorflow/tfjs-node-gpu';
 
 const model = tf.sequential();
 model.add(tf.layers.dense({units: 30, activation: 'sigmoid', inputShape: [28*28]}));
@@ -21,8 +21,12 @@ function resultArray(label){
 async function run() {
     //console.time("total")
 
-    let images = getImages(false, 0, 50000)
+    let images = getImages( 0, 50000)
     //console.log(JSON.stringify(images[0]))
+    if (images.length === 0) {
+        console.error("No images received for training. Check the data loading process.");
+        return;
+    }
     await train(images)
     check(10000, true)
     //weights()
@@ -82,7 +86,7 @@ function check(size,show){
     let startTime = Date.now()
     let start = Math.floor(Math.random()*(10000 - size))
     if (show) console.log("test images "+start+" "+size )
-    let testImages = getImages(true,start,start+size)
+    let testImages = getImages(start,start+size)
     let correct = 0
     for (let i=0;i<testImages.length;i++) {
         let img = testImages[i].pixels.map((d)=> d)
