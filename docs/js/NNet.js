@@ -2,12 +2,10 @@
 export const NNet = {}
 
 NNet.generate = function(d) {
-
     // Draw layers
     d.layerConfig.forEach((neurons, index) => {
         drawLayer(d, index);
     });
-    // Connect neurons across layers
     drawConnections(d);
     drawInOutput(d)
 }
@@ -75,18 +73,21 @@ function drawConnections(d) {
 
 function drawInOutput(d) {
     let layer = d.layerConfig[0]
-    let x = d.layerSpacing - 80;
+    let x = d.layerSpacing - 50;
     let yStart = (d.height - (d.neuronSpacing * (layer - 1))) / 2;
-
     if (d.input) {
         // console.log(x + "   " + yStart + lastLayer)
         for (let i = 0; i < layer; i++) {
+            let v = d3.randomUniform(0, 1)().toFixed(3)
+            if (Array.isArray(d.input)){
+                v=d.input[i]
+            }
             d.svg.append("text")
                 .attr("x", x )
                 .attr("y", yStart + i * d.neuronSpacing +5)
                 .style("stroke", "black")
                 .style("stroke-width", .3)
-                .text(d3.randomUniform(0, 1)().toFixed(3));
+                .text(v);
         }
     }
     layer = d.layerConfig[d.layerConfig.length - 1]
@@ -95,16 +96,19 @@ function drawInOutput(d) {
     // console.log(x + "   " + yStart + lastLayer)
     if (d.output) {
         for (let i = 0; i < layer; i++) {
+            let v = d3.randomUniform(0, 1)().toFixed(3)
+            if (Array.isArray(d.output)){
+                v=d.output[i]
+            }
             d.svg.append("text")
                 .attr("x", x)
                 .attr("y", yStart + i * d.neuronSpacing +5)
                 .style("stroke", "black")
                 .style("stroke-width", .3)
-                .text(d3.randomUniform(0, 1)().toFixed(3));
+                .text(v);
         }
     }
-/*
-    d.svg.append("path")
+/*    d.svg.append("path")
         .attr("x", x)
         .attr("y", yStart + 3 * d.neuronSpacing)
         .attr("transform", "translate(50, 50) scale(0.1)")
