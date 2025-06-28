@@ -38,7 +38,7 @@ matrix.generate = function(d){
             let x = d.x + (i*d.cellWidth)+(d.cellWidth/2)
             let y = d.y + (j*d.cellWidth)+(d.cellWidth/2)
             let number = d3.randomUniform(0,1)().toFixed(2)
-            d.data[i][j]=number
+            d.data[j][i]=number
             // console.log(x+" "+y+" "+number)
             d.svg.append("text")
                 .attr("x", x)

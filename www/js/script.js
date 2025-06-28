@@ -7,7 +7,7 @@ function createImageData(layerConfig){
     let data = {
         layerConfig,
         width : 800,
-        height : 400,
+        height : 600,
         neuronRadius : 15,
         neuronSpacing : 50
     }
@@ -163,11 +163,11 @@ function Matrix() {
         width : 800,
         height : 400,
         rows:3,
-        columns:3,
+        columns:10,
     }
     init(d,"#chart")
     matrix.generate(d);
-    border(d)
+    // border(d)
 }
 
 
@@ -177,6 +177,7 @@ window.GraphNetwork = GraphNetwork
 window.LoopNetwork = LoopNetwork
 window.CrossLayerNetwork = CrossLayerNetwork
 window.Matrix = Matrix;
+window.glow = NNet.glow
 // Call main to execute the program
 // SmallNetwork();
 // ConvolvNetwork()

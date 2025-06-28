@@ -15,18 +15,18 @@ NGraph.generate = function(d) {
         // round to layerWidth
         x = Math.floor(x / d.layerWidth) * d.layerWidth
         let y = d.graphY + (Math.random() * d.graphHeight)
-        return {x,y}
+        return {x,y, from:[], to:[]}
     }).sort((a,b)=> (a.x - b.x))
     // check collisions?
     preventCollisions(d.data,d.neuronRadius)
     let startY =  (d.height - (d.neuronSpacing * (d.layerConfig[0] - 1))) / 2;
     let input = Array.from({length:(d.layerConfig[0])},(v,i)=>
     {
-        return {x:30,y:startY + i*d.neuronSpacing, layer : "input"}
+        return {x:30,y:startY + i*d.neuronSpacing, layer : "input",from:[], to:[]}
     })
     startY =  (d.height - (d.neuronSpacing * (d.layerConfig[2] - 1))) / 2;
     let output = Array.from({length:(d.layerConfig[0])},(v,i)=> {
-        return {x:d.width-50,y:startY + i*d.neuronSpacing, layer : "output"}
+        return {x:d.width-50,y:startY + i*d.neuronSpacing, layer : "output",from:[], to:[]}
     })
     d.data = [...input,...d.data,...output]
     d.data.forEach((v,i)=>{v.i = i})
@@ -80,13 +80,15 @@ function drawGraph(d, neurons) {
         .style("fill", "steelblue")
         .style("stroke", "black")
         .style("stroke-width", 1) // d3.randomUniform(1,6));
+        .on("click" , highlight)
     enter.append("text")
         .attr("x", d=>d.x)
         .attr("y", d=>d.y + 4) // Offset to center the label inside the circle
         .attr("text-anchor", "middle")
         .attr("fill", "white")
         .style("font-size", "10px")
-        .text(((d,i)=>i + 1));
+        .text(((d,i)=>i + 1))
+        .on("click" , highlight);
 
 /*    for (let i = 0; i < neurons.length; i++) {
         // Create a circle for each neuron
@@ -152,13 +154,18 @@ function drawConnections(d) {
     d.data.forEach(from => {
         d.data.forEach(to =>{
             if (d.connect(from, to)){
+                // add connection to the data
+                from.to.push(to)
+                to.from.push(from)
                 d.svg.append("line")
                     .attr("x1", from.x+d.neuronRadius)
                     .attr("y1", from.y)
                     .attr("x2", to.x-d.neuronRadius)
                     .attr("y2", to.y)
                     .style("stroke", from.i >= to.i?"red":"black")
-                    .style("stroke-width", from.i >= to.i?1:0.3);
+                    .style("stroke-width", from.i >= to.i?1:0.3)
+                    .attr("data-from",from.i)
+                    .attr("data-to",to.i);
             }
         })
     })
@@ -210,4 +217,61 @@ function drawInOutput(d) {
         .attr("transform", "translate(50, 50) scale(0.1)")
         .attr("d","M160 48a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zM126.5 199.3c-1 .4-1.9 .8-2.9 1.2l-8 3.5c-16.4 7.3-29 21.2-34.7 38.2l-2.6 7.8c-5.6 16.8-23.7 25.8-40.5 20.2s-25.8-23.7-20.2-40.5l2.6-7.8c11.4-34.1 36.6-61.9 69.4-76.5l8-3.5c20.8-9.2 43.3-14 66.1-14c44.6 0 84.8 26.8 101.9 67.9L281 232.7l21.4 10.7c15.8 7.9 22.2 27.1 14.3 42.9s-27.1 22.2-42.9 14.3L247 287.3c-10.3-5.2-18.4-13.8-22.8-24.5l-9.6-23-19.3 65.5 49.5 54c5.4 5.9 9.2 13 11.2 20.8l23 92.1c4.3 17.1-6.1 34.5-23.3 38.8s-34.5-6.1-38.8-23.3l-22-88.1-70.7-77.1c-14.8-16.1-20.3-38.6-14.7-59.7l16.9-63.5zM68.7 398l25-62.4c2.1 3 4.5 5.8 7 8.6l40.7 44.4-14.5 36.2c-2.4 6-6 11.5-10.6 16.1L54.6 502.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L68.7 398z")
  */
+}
+
+function highlight(event, d) {
+    const link = d3.select(this)
+    console.log("click "+d.from.length+" "+d.i)
+    const delay = 2000
+    d3.selectAll("line[data-from='"+d.i+"']")
+        .transition()
+        .ease(d3.easeCubicOut)
+        .duration(delay)
+        .style("stroke", "red")
+        .style("stroke-width",2)
+        .transition()
+        .ease(d3.easeCubicIn)
+        .duration(delay)
+        .style("stroke", "black")
+        .style("stroke-width",0.2)
+    d3.selectAll("line[data-to='"+d.i+"']")
+        .transition()
+        .duration(delay)
+        .ease(d3.easeCubicOut)
+        .style("stroke", "green")
+        .style("stroke-width",2)
+        .transition()
+        .ease(d3.easeCubicIn)
+        .duration(delay)
+        .style("stroke", "black")
+        .style("stroke-width",0.2)
+    /*link.transition()
+        .duration(delay)
+        .style("fill", "orange")
+        .transition()
+        .duration(delay)
+        .style("fill", "steelblue");
+
+     */
+    /*
+    original values
+    data.forEach(d => {
+    d3.selectAll("line[data-from='" + d + "']")
+        .each(function() {
+            // Save original styles
+            const originalStroke = d3.select(this).style("stroke");
+            const originalStrokeWidth = d3.select(this).style("stroke-width");
+            // Transitions
+            d3.select(this)
+                .transition()
+                .duration(delay)
+                .style("stroke", "orange")
+                .style("stroke-width", 2)
+                .transition()
+                .duration(delay)
+                .style("stroke", originalStroke)
+                .style("stroke-width", originalStrokeWidth);
+        });
+    });
+*/
 }
