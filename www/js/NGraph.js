@@ -25,7 +25,7 @@ NGraph.generate = function(d) {
         return {x:30,y:startY + i*d.neuronSpacing, layer : "input",from:[], to:[]}
     })
     startY =  (d.height - (d.neuronSpacing * (d.layerConfig[2] - 1))) / 2;
-    let output = Array.from({length:(d.layerConfig[0])},(v,i)=> {
+    let output = Array.from({length:(d.layerConfig[2])},(v,i)=> {
         return {x:d.width-50,y:startY + i*d.neuronSpacing, layer : "output",from:[], to:[]}
     })
     d.data = [...input,...d.data,...output]
@@ -80,7 +80,10 @@ function drawGraph(d, neurons) {
         .style("fill", "steelblue")
         .style("stroke", "black")
         .style("stroke-width", 1) // d3.randomUniform(1,6));
-        .on("click" , highlight)
+        // .on("click" , highlight)
+        .on("click" , function(event, d) {
+          highlight(d3, event, d, this);  // `this` is the DOM element
+        })
     enter.append("text")
         .attr("x", d=>d.x)
         .attr("y", d=>d.y + 4) // Offset to center the label inside the circle
@@ -88,7 +91,10 @@ function drawGraph(d, neurons) {
         .attr("fill", "white")
         .style("font-size", "10px")
         .text(((d,i)=>i + 1))
-        .on("click" , highlight);
+        // .on("click" , highlight);
+        .on("click" , function(event, d) {
+            highlight(d3, event, d, this);  // `this` is the DOM element
+    })
 
 /*    for (let i = 0; i < neurons.length; i++) {
         // Create a circle for each neuron
@@ -219,7 +225,7 @@ function drawInOutput(d) {
  */
 }
 
-function highlight(event, d) {
+function highlight(d3, event, d) {
     const link = d3.select(this)
     console.log("click "+d.from.length+" "+d.i)
     const delay = 2000

@@ -152,7 +152,7 @@ function GraphNetwork() {
 
 function LoopNetwork() {
     // Configure the network: [Input Neurons, Hidden Layer Neurons, Output Neurons]
-    const d = createImageData([5, 60, 5]);
+    const d = createImageData([5, 60, 6]);
     d.height=600
     d.neuronRadius = 10
     d.neuronSpacing = 30
