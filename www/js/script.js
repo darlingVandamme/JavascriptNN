@@ -64,14 +64,32 @@ function SmallNetwork() {
     border(d)
 }
 
+function PrunedNetwork() {
+    // Configure the network: [Input Neurons, Hidden Layer Neurons, Output Neurons]
+    const d = createImageData([5, 12, 12, 5]);
+    d.height=600
+    d.neuronRadius = 10
+    d.neuronSpacing = 30
+    d.output=false
+    d.input=false
+    d.connectionFilter = (d,i,j)=>{
+        let dist =  Math.abs(i/d.layerConfig[d.layerIndex] - j/d.layerConfig[d.layerIndex+1] )
+        return Math.random() * dist < 0.2
+    }
+    init(d,"#chart")
+    NNet.generate(d);
+    border(d)
+}
+
+
 function ConvolvNetwork() {
     // Configure the network: [Input Neurons, Hidden Layer Neurons, Output Neurons]
     const d = createImageData([18, 12, 12, 5]);
     d.height=600
     d.neuronRadius = 10
     d.neuronSpacing = 30
-    d.output=true
-    d.input=true
+    d.output=false
+    d.input=false
     d.connectionFilter = (d,i,j)=>{
         if (d.layerIndex > 0) return true
         let dist =  Math.abs(i/d.layerConfig[d.layerIndex] - j/d.layerConfig[d.layerIndex+1] )
@@ -172,12 +190,15 @@ function Matrix() {
 
 
 window.SmallNetwork = SmallNetwork;
+window.PrunedNetwork = PrunedNetwork;
 window.ConvolvNetwork = ConvolvNetwork;
 window.GraphNetwork = GraphNetwork
 window.LoopNetwork = LoopNetwork
 window.CrossLayerNetwork = CrossLayerNetwork
 window.Matrix = Matrix;
 window.glow = NNet.glow
+// default show pruned
+PrunedNetwork()
 // Call main to execute the program
 // SmallNetwork();
 // ConvolvNetwork()
