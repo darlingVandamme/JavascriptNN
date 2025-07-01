@@ -82,7 +82,7 @@ function drawGraph(d, neurons) {
         .style("stroke-width", 1) // d3.randomUniform(1,6));
         // .on("click" , highlight)
         .on("click" , function(event, d) {
-          highlight(d3, event, d, this);  // `this` is the DOM element
+          highlight( event, d, d3);  // `this` is the DOM element
         })
     enter.append("text")
         .attr("x", d=>d.x)
@@ -93,7 +93,7 @@ function drawGraph(d, neurons) {
         .text(((d,i)=>i + 1))
         // .on("click" , highlight);
         .on("click" , function(event, d) {
-            highlight(d3, event, d, this);  // `this` is the DOM element
+            highlight(event, d, d3);  // `this` is the DOM element
     })
 
 /*    for (let i = 0; i < neurons.length; i++) {
@@ -225,7 +225,7 @@ function drawInOutput(d) {
  */
 }
 
-function highlight(d3, event, d) {
+function highlight(event, d, d3) {
     const link = d3.select(this)
     console.log("click "+d.from.length+" "+d.i)
     const delay = 2000
