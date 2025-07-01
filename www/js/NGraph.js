@@ -4,6 +4,7 @@ export const NGraph = {}
 NGraph.generate = function(d) {
     // Draw layers
     // input
+    if (!d.d3) d.d3 = d3 // store a ref to d3 inside the d data
     const data=new Array(d.layerConfig[1]).fill(0)
     d.graphWidth = d.width*0.6
     d.graphX = (d.width - d.graphWidth) / 2
@@ -81,8 +82,8 @@ function drawGraph(d, neurons) {
         .style("stroke", "black")
         .style("stroke-width", 1) // d3.randomUniform(1,6));
         // .on("click" , highlight)
-        .on("click" , function(event, d) {
-          highlight( event, d, d3);  // `this` is the DOM element
+        .on("click" , function(event, d1) {
+          highlight( event, d1, d.d3);  // `this` is the DOM element
         })
     enter.append("text")
         .attr("x", d=>d.x)
@@ -92,8 +93,8 @@ function drawGraph(d, neurons) {
         .style("font-size", "10px")
         .text(((d,i)=>i + 1))
         // .on("click" , highlight);
-        .on("click" , function(event, d) {
-            highlight(event, d, d3);  // `this` is the DOM element
+        .on("click" , function(event, d1) {
+            highlight(event, d1, d.d3);  // `this` is the DOM element
     })
 
 /*    for (let i = 0; i < neurons.length; i++) {
