@@ -4,7 +4,6 @@ export const NGraph = {}
 NGraph.generate = function(d) {
     // Draw layers
     // input
-    if (!d.d3) d.d3 = d3 // store a ref to d3 inside the d data
     const data=new Array(d.layerConfig[1]).fill(0)
     d.graphWidth = d.width*0.6
     d.graphX = (d.width - d.graphWidth) / 2
